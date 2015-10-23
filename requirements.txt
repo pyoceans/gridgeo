@@ -1,0 +1,8 @@
+numpy
+pysgrid
+pyugrid
+netCDF4
+fiona
+shapely
+rasterio
+setuptools
