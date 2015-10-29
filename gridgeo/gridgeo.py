@@ -38,7 +38,7 @@ class GridGeo(object):
         elif isinstance(grid, pysgrid.sgrid.SGridND):
             # NOTE: We have 3 sgrid classes!!!  SGridND, SGrid2D, and
             # SGrid3D. Do we really need all that?
-            raise NotImplementedError
+            polygons = _parse_sgrid(grid, precision)
         else:
             msg = 'Object {!r} does not seem to be a grid-like object.'
             raise msg(grid)
@@ -160,5 +160,26 @@ def _parse_sgrid(sgrid, precision):
     The `sgrid` object is parsed as a collection (`MultiPolygon`) of
     triangles (`Polygon`).
 
+    NOTE: Works only for the grid center because sgrid does not provide an
+    agnostic way to access the edges.
+
     """
-    raise NotImplementedError
+    coords = sgrid.centers.copy()
+
+    if precision:
+        coords = np.round(coords, decimals=precision)
+
+    M, N, L = coords.shape
+    points = np.concatenate((coords[0:-1, 0:-1],
+                             coords[0:-1, 1:],
+                             coords[1:, 1:],
+                             coords[1:, 0:-1],
+                             coords[0:-1, 0:-1]), axis=L)
+
+    points = points.reshape((M-1 * N-1, 5, L))
+
+    # NOTE: This loop can be slow.  Numba @jit can reduce it in half.
+    polygons = []
+    for p in points:
+        polygons.append(Polygon(p))
+    return MultiPolygon(polygons)
