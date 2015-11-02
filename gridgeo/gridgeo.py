@@ -69,26 +69,36 @@ class GridGeo(object):
         Return a GeoJSON representation of an s-/u-`grid` object.
 
         """
-        name = kw.pop('name', self.mesh_name)
-        popupContent = kw.pop('popupContent', '{!r}'.format(self.grid))
+        # `kw` are based on the simplestyle-spec:
+        # https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
+        title = kw.pop('title', self.mesh_name)
+        description = kw.pop('description', '')
+        marker_size = kw.pop('marker-size', 'medium')
+        marker_symbol = kw.pop('marker-symbol', '')
+        marker_color = kw.pop('marker-color', '7e7e7e')
+        stroke = kw.pop('stroke', '555555')
+        stroke_opacity = kw.pop('stroke-opacity', 1)
+        stroke_width = kw.pop('stroke-width', 2)
+        fill = kw.pop('fill', '555555')
+        fill_opacity = kw.pop('fill-opacity', 0.6)
 
-        color = kw.pop('color', "#ffffff")
-        stroke = kw.pop('stroke', "#000000")
-        stroke_width = kw.pop('stroke_width', 1)
-        stroke_opacity = kw.pop('stroke_opacity', 1)
-        fill = kw.pop('fill', "#ff0000")
-        fill_opacity = kw.pop('fill_opacity', 0)
+        # FIXME: Folium/Leaflet.
+        # popupContent = kw.pop('popupContent', '{!r}'.format(self.grid))
+        # color = kw.pop('color', "#ffffff")
 
         geojson = {"type": "Feature",
                    "properties": {
+                       "title": title,
+                       "description": description,
+                       "marker-size": marker_size,
+                       "marker-symbol": marker_symbol,
+                       "marker-color": marker_color,
                        "stroke": stroke,
-                       "stroke-width": stroke_width,
                        "stroke-opacity": stroke_opacity,
+                       "stroke-width": stroke_width,
                        "fill": fill,
-                       "color": color,
                        "fill-opacity": fill_opacity,
-                       "name": name,
-                       "popupContent": popupContent},
+                       },
                    "geometry": self.polygons.__geo_interface__}
         return geojson
 
