@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+Version 0.1.0
+
+* Added a raster representation (`rasterize`).
+* Re-factor the package into `utilities.py` and `gridgeo.py`.
+* Removed `precision` argument. (Create degenerated polygons.)
+* Better `__repr__`.
+* Simplified `GridGeo`. (moved all the loading stuff to load_grid.)
+
 Version 0.0.1
 
 * First version of `gridgeo`.
