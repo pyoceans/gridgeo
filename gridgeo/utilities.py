@@ -83,8 +83,12 @@ def _parse_rgrid(nc):
     FIXME: `long_name` only is very flaky!
 
     """
-    lon = nc.get_variables_by_attributes(long_name='longitude')[0][:]
-    lat = nc.get_variables_by_attributes(long_name='latitude')[0][:]
+
+    lon_names = lambda v: v in ['longitude', 'Longitude',
+                                'lon', 'Lon', 'long', 'Long']
+    lat_names = lambda v: v in ['latitude', 'Latitude', 'lat', 'Lat']
+    lon = nc.get_variables_by_attributes(long_name=lon_names)[0][:]
+    lat = nc.get_variables_by_attributes(long_name=lat_names)[0][:]
 
     coords = np.meshgrid(lon, lat)
     coords = np.stack([coords[0], coords[1]], axis=2)
@@ -99,12 +103,8 @@ def _make_rgrid(coords):
                              coords[1:, 0:-1],
                              coords[0:-1, 0:-1]), axis=L)
 
-    points = points.reshape((M-1 * N-1, 5, L))
+    points = points.reshape(((M-1) * (N-1), 5, L))
 
-    # polygons = []
-    # for p in points:
-    #     polygons.append(Polygon(p))
-    # return MultiPolygon(polygons)
     return MultiPolygon([Polygon(p) for p in points])
 
 
