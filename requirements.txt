@@ -6,3 +6,5 @@ fiona
 shapely
 rasterio
 setuptools
+cartopy
+matplotlib
