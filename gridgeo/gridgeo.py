@@ -1,8 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 
-import json
+from shapely.ops import cascaded_union
 
-from .utilities import load_grid
+from .utilities import load_grid, rasterize
 
 __all__ = ['GridGeo']
 
@@ -28,6 +28,9 @@ class GridGeo(object):
         self.grid = grid
         self.polygons = polygons
         self.mesh = mesh
+        self._outline = None
+        self._raster = None
+        self._geo_interface = None
 
     def __str__(self):
         return 'GeoGrid of {!r}'.format(self.nc)
@@ -36,9 +39,26 @@ class GridGeo(object):
         msg = '<Grid type and size: {}, {}>'.format
         return msg(self.mesh, len(self.polygons))
 
+    def _repr_svg_(self):
+        return self.outline
+
+    @property
+    def outline(self):
+        if self._outline is None:
+            self._outline = cascaded_union(self.polygons)
+        return self._outline
+
+    @property
+    def raster(self):
+        if self._raster is None:
+            self._raster = rasterize(self.polygons)
+        return self._raster
+
     @property
     def __geo_interface__(self):
-        return self.polygons.__geo_interface__
+        if self._geo_interface is None:
+            self._geo_interface = self.polygons.__geo_interface__
+        return self._geo_interface
 
     def to_geojson(self, **kw):
         """
