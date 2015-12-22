@@ -3,11 +3,13 @@ Changelog
 
 Version 0.1.0
 
-* Added a raster representation (`rasterize`).
+* Added a properties for `raster` representation (via the `rasterize` method)
+  and vector `outline` (via shapely's' `cascaded_union`).
 * Re-factor the package into `utilities.py` and `gridgeo.py`.
 * Removed `precision` argument. (Create degenerated polygons.)
 * Better `__repr__`.
-* Simplified `GridGeo`. (moved all the loading stuff to load_grid.)
+* Simplified `GridGeo`. (Moved all the loading stuff to `load_grid`.)
+* Caching expensive computations.
 
 Version 0.0.1
 
