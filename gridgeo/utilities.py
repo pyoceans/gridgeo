@@ -160,7 +160,7 @@ def rasterize(polygons):
     """
     import cartopy.crs as ccrs
     import matplotlib.pyplot as plt
-    from StringIO import StringIO
+    from io import BytesIO
 
     projection = ccrs.PlateCarree()
     fig, ax = plt.subplots(subplot_kw=dict(projection=projection))
@@ -172,7 +172,7 @@ def rasterize(polygons):
                       facecolor='none', **kw)
     ax.axis('off')
 
-    imgdata = StringIO()
+    imgdata = BytesIO()
     fig.savefig(imgdata, transparent=True, dpi=150)
     imgdata.seek(0)
     img = _trim(imgdata)
