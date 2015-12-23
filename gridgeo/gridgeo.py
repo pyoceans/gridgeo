@@ -1,6 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 
+from shapely import speedups
+if speedups.available:
+    speedups.enable()
 from shapely.ops import cascaded_union
+from shapely.geometry import MultiPolygon
 
 from .utilities import load_grid, rasterize
 
@@ -22,25 +26,32 @@ class GridGeo(object):
 
         """
 
-        grid, polygons, mesh = load_grid(nc)
+        grid, polygons_generator, mesh = load_grid(nc)
 
         self.nc = nc
         self.grid = grid
-        self.polygons = polygons
         self.mesh = mesh
-        self._outline = None
+
         self._raster = None
+        self._outline = None
+        self._polygons = None
         self._geo_interface = None
+        self._polygons_generator = polygons_generator
 
     def __str__(self):
-        return 'GeoGrid of {!r}'.format(self.nc)
+        return '{}'.format(self.mesh)
 
     def __repr__(self):
-        msg = '<Grid type and size: {}, {}>'.format
-        return msg(self.mesh, len(self.polygons))
+        if self.grid:
+            return '{!r}'.format(self.grid)
+        else:
+            return '{!r}'.format(self.nc)
 
-    def _repr_svg_(self):
-        return self.outline
+    @property
+    def polygons(self):
+        if self._polygons is None:
+            self._polygons = MultiPolygon(list(self._polygons_generator))
+        return self._polygons
 
     @property
     def outline(self):
