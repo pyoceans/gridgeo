@@ -6,9 +6,11 @@ Version 0.1.0
 * Added a properties for `raster` representation (via the `rasterize` method)
   and vector `outline` (via shapely's' `cascaded_union`).
 * Re-factor the package into `utilities.py` and `gridgeo.py`.
-* Removed `precision` argument. (Create degenerated polygons.)
-* Better `__repr__`.
-* Simplified `GridGeo`. (Moved all the loading stuff to `load_grid`.)
+* Removed `precision` argument. (Created degenerated polygons.)
+* The `__repr__` now return the original grid `__repr__` if u/s-grid
+  or the original `nc` object if the grid is "unknown."
+* Simplified the `GridGeo`class.
+  (Moved all the loading stuff to `load_grid`.)
 * Caching expensive computations.
 
 Version 0.0.1
