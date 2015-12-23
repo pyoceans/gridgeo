@@ -1,8 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-from shapely import speedups
-if speedups.available:
-    speedups.enable()
 from shapely.ops import cascaded_union
 from shapely.geometry import MultiPolygon
 

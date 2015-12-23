@@ -9,10 +9,6 @@ import numpy as np
 from pysgrid.custom_exceptions import SGridNonCompliantError
 
 from netCDF4 import Dataset
-
-from shapely import speedups
-if speedups.available:
-    speedups.enable()
 from shapely.geometry.polygon import Polygon
 
 
