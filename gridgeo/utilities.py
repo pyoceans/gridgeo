@@ -107,6 +107,12 @@ def _parse_grid(nc):
 def _parse_cube(cube):
     lon = cube.coord(axis='X').points
     lat = cube.coord(axis='Y').points
+
+    if 'ugrid' in cube.attributes.get('Conventions').lower():
+        msg = ('UGRID from cube is not implemented.'
+               'Use gridgeo.GridGeo(fname/url) instead.')
+        raise NotImplementedError(msg)
+
     if lon.ndim == 1 and lat.ndim == 1:
         lon, lat = np.meshgrid(lon, lat)
     coords = np.stack([lon, lat], axis=2)

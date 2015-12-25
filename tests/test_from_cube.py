@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 import os
 import types
 
+import pytest
 import numpy as np
 
 import iris
@@ -32,6 +33,14 @@ def test_mesh():
     assert grid.mesh == 'non-compliant'
 
 
+def test__str__():
+    assert grid.__str__() == grid.mesh
+
+
+def test__repr__():
+    assert grid.__repr__() == grid.nc.__repr__()
+
+
 def test_raster():
     assert isinstance(grid.raster, np.ndarray)
 
@@ -46,6 +55,10 @@ def test_outline():
 
 def test_polygons():
     assert isinstance(grid.polygons, MultiPolygon)
+
+
+def test_polygons_len():
+    len(grid.polygons) == 140041
 
 
 def test_geo_interface():
@@ -68,3 +81,23 @@ def test_to_geojson_property():
                   'fill', 'fill-opacity']
     for prop in properties:
         assert prop in geojson['properties'].keys()
+
+
+def test_sgrid_from_cube(fname=os.path.join(data_path,
+                                            '00_dir_NYB05.nc')):
+    cube = iris.load_cube(fname, 'sea_water_potential_temperature')
+    grid = gridgeo.GridGeo(cube)
+    assert isinstance(grid, gridgeo.GridGeo)
+
+
+def test_ugrid_from_cube(fname=os.path.join(data_path,
+                                            'FVCOM-Nowcast-Agg.nc')):
+        cube = iris.load_cube(fname, 'sea_water_potential_temperature')
+        with pytest.raises(NotImplementedError):
+            gridgeo.GridGeo(cube)
+
+
+def test_rgrid_from_cube(fname=os.path.join(data_path, 'CA_DAS.nc')):
+    cube = iris.load_cube(fname, 'sea_water_temperature')
+    grid = gridgeo.GridGeo(cube)
+    assert isinstance(grid, gridgeo.GridGeo)

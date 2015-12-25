@@ -30,6 +30,14 @@ def test_mesh():
     assert grid.mesh == 'ugrid'
 
 
+def test__str__():
+    assert grid.__str__() == grid.mesh
+
+
+def test__repr__():
+    assert grid.__repr__() == grid.grid.__repr__()
+
+
 def test_raster():
     assert isinstance(grid.raster, np.ndarray)
 
@@ -44,6 +52,10 @@ def test_outline():
 
 def test_polygons():
     assert isinstance(grid.polygons, MultiPolygon)
+
+
+def test_polygons_len():
+    len(grid.polygons) == 98818
 
 
 def test_geo_interface():
