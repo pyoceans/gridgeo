@@ -101,3 +101,12 @@ def test_rgrid_from_cube(fname=os.path.join(data_path, 'CA_DAS.nc')):
     cube = iris.load_cube(fname, 'sea_water_temperature')
     grid = gridgeo.GridGeo(cube)
     assert isinstance(grid, gridgeo.GridGeo)
+
+
+def test_cube_with_multiple(fname=os.path.join(data_path, 'OCOS.nc')):
+    cube = iris.load_cube(fname, 'potential temperature')
+    with pytest.raises(iris.exceptions.CoordinateNotFoundError):
+        cube.coord(axis='X')
+        cube.coord(axis='Y')
+    grid = gridgeo.GridGeo(cube)
+    assert isinstance(grid, gridgeo.GridGeo)
