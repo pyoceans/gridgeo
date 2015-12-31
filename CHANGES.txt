@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+Version 0.2.0
+
+* Parse cubes with more than one `X`, `Y` axis.
+
 Version 0.1.0
 
 * Added a properties for `raster` representation (via the `rasterize` method)

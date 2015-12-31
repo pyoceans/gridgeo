@@ -105,8 +105,9 @@ def _parse_grid(nc):
 
 
 def _parse_cube(cube):
-    lon = cube.coord(axis='X').points
-    lat = cube.coord(axis='Y').points
+    """Return the first coord if more than one exists."""
+    lon = cube.coords(axis='X')[0].points
+    lat = cube.coords(axis='Y')[0].points
 
     if 'ugrid' in cube.attributes.get('Conventions').lower():
         msg = ('UGRID from cube is not implemented.'
