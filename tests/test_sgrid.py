@@ -23,7 +23,7 @@ def test_nc_from_string():
 
 
 def test_grid():
-    assert isinstance(grid.grid, pysgrid.SGrid2D)
+    assert isinstance(grid.grid, pysgrid.SGrid)
 
 
 def test_mesh():
