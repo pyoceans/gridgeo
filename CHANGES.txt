@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+Version 0.2.1
+
+* Use latest `pysgrid` API.
+
 Version 0.2.0
 
 * Parse cubes with more than one `X`, `Y` axis.

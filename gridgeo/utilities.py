@@ -3,11 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import pyugrid
 import pysgrid
-
 import numpy as np
-
-from pysgrid.custom_exceptions import SGridNonCompliantError
-
 from netCDF4 import Dataset
 from shapely.geometry.polygon import Polygon
 
@@ -37,11 +33,11 @@ def load_grid(nc):
         nc = Dataset(nc)
 
     try:
-        grid = pysgrid.from_nc_dataset(nc)
+        grid = pysgrid.load_grid(nc)
         polygons = _parse_sgrid(grid)
         mesh = 'sgrid'
         return grid, polygons, mesh
-    except (SGridNonCompliantError, KeyError):
+    except (ValueError, KeyError):
         pass
     try:
         grid = pyugrid.UGrid.from_nc_dataset(nc)
@@ -72,11 +68,13 @@ def _parse_sgrid(sgrid):
     """
     Return a polygons generator from an `sgrid` object.
 
-    NOTE: Works only for the grid center. The edges are not implemented in
-    `pysgrid` yet.
+    FIXME: Creating a fake grid for the grid center.
+    We should honor the SGRID conventions and make a quad cell grid from the
+    nodes and instead.
 
     """
-    coords = sgrid.centers.copy()
+    coords = np.concatenate([sgrid.center_lon[:][..., None],
+                             sgrid.center_lat[:][..., None, ]], axis=2)
     return _make_grid(coords)
 
 
