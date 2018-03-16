@@ -1,24 +1,35 @@
 Changelog
 ---------
 
+Version 1.0.0
+
+* Construct the grid based on the variables rather the datasets.
+  The variables are CF's smallest unit and the only way to get a unique valid grid for SGRID.
+* Dropped the dependency on iris, cartopy, pysgrid, and pyugrid.
+* Dropped raster object.
+* Added an option to reduce the precision for the GeoJSON.
+* Grid parsing is now done with a grid-aware CFVariable object.
+* Dropped parsing grid from iris.cube.
+* Grids names are 'ugrid', 'sgrid', 'unknown_1d', and 'unknown_2d'.
+
 Version 0.2.1
 
-* Use latest `pysgrid` API.
+* Use latest pysgrid API.
 
 Version 0.2.0
 
-* Parse cubes with more than one `X`, `Y` axis.
+* Parse iris cubes with more than one X, Y axis.
 
 Version 0.1.0
 
-* Added a properties for `raster` representation (via the `rasterize` method)
-  and vector `outline` (via shapely's' `cascaded_union`).
-* Re-factor the package into `utilities.py` and `gridgeo.py`.
-* Removed `precision` argument. (Created degenerated polygons.)
-* The `__repr__` now return the original grid `__repr__` if u/s-grid
-  or the original `nc` object if the grid is "unknown."
-* Simplified the `GridGeo`class.
-  (Moved all the loading stuff to `load_grid`.)
+* Added a properties for raster representation (via the rasterize method)
+  and vector outline (via shapely's' cascaded_union).
+* Re-factor the package into utilities.py and gridgeo.py.
+* Removed precision argument. (Created degenerated polygons.)
+* The __repr__ now return the original grid __repr__ if u/s-grid
+  or the original nc object if the grid is "unknown."
+* Simplified the GridGeo class.
+  (Moved all the loading stuff to load_grid.)
 * Caching expensive computations.
 
 Version 0.0.1
