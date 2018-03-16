@@ -3,11 +3,16 @@ from __future__ import absolute_import, division, print_function
 from copy import copy
 
 from gridgeo.cfvariable import CFVariable
+from gridgeo.ugrid import ugrid
 
 import netCDF4
 
 from shapely.ops import cascaded_union
 
+try:
+    from matplotlib import tri
+except ImportError:
+    tri = False
 
 def set_precision(coords, precision):
     result = []
@@ -17,18 +22,6 @@ def set_precision(coords, precision):
         for coord in coords:
             result.append(set_precision(coord, precision))
     return result
-
-
-def load_grid(nc, **kwargs):
-    if isinstance(nc, netCDF4.Dataset):
-        pass
-    else:
-        nc = netCDF4.Dataset(nc)
-
-    var = CFVariable(nc, **kwargs)
-    mesh = var.topology()
-    polygons = var.polygons()
-    return polygons, mesh
 
 
 class GridGeo(object):
@@ -44,13 +37,27 @@ class GridGeo(object):
 
         """
 
-        polygons, mesh = load_grid(nc, **kwargs)
+        if isinstance(nc, netCDF4.Dataset):
+            pass
+        else:
+            nc = netCDF4.Dataset(nc)
 
-        self.mesh = mesh
+        var = CFVariable(nc, **kwargs)
+
+        self.x = var.x_axis()[:]
+        self.y = var.y_axis()[:]
+        self.mesh = var.topology()
+        self.polygons = var.polygons()
+
+        if self.mesh == 'ugrid' and tri:
+            grid = ugrid(nc)
+            node_x = grid['nodes']['x']
+            node_y = grid['nodes']['y']
+            faces = grid['faces']
+            self.triang = tri.Triangulation(node_x, node_y, triangles=faces)
 
         self._outline = None
         self._geo_interface = None
-        self. polygons = polygons
 
     def __str__(self):
         return '{}'.format(self.mesh)
