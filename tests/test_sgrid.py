@@ -5,7 +5,7 @@ import gridgeo
 from shapely.geometry import MultiPolygon, Polygon
 
 
-url = 'http://geoport.whoi.edu/thredds/dodsC/clay/usgs/users/jcwarner/Sandy/triple_nest/00_dir_NYB07.ncml'
+url = 'http://geoport.whoi.edu/thredds/dodsC/clay/usgs/users/jcwarner/Sandy/triple_nest/00_dir_NYB07.ncml'  # noqa
 
 
 grid = gridgeo.GridGeo(
