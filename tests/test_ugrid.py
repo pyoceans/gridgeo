@@ -1,13 +1,11 @@
 from __future__ import (absolute_import, division, print_function)
 
-import os
+import gridgeo
 
 from shapely.geometry import MultiPolygon, Polygon
 
-import gridgeo
 
-
-url = 'http://www.smast.umassd.edu:8080/thredds/dodsC/FVCOM/NECOFS/Forecasts/NECOFS_FVCOM_OCEAN_BOSTON_FORECAST.nc'
+url = 'http://www.smast.umassd.edu:8080/thredds/dodsC/FVCOM/NECOFS/Forecasts/NECOFS_FVCOM_OCEAN_BOSTON_FORECAST.nc'  # noqa
 
 
 grid = gridgeo.GridGeo(
@@ -26,7 +24,7 @@ def test__str__():
 
 
 def test_outline():
-    assert isinstance(grid.outline, (MultiPolygon,Polygon))
+    assert isinstance(grid.outline, (MultiPolygon, Polygon))
 
 
 def test_polygons():
