@@ -6,7 +6,7 @@ Version 1.0.0
 * Construct the grid based on the variables rather the datasets.
   The variables are CF's smallest unit and the only way to get a unique valid grid for SGRID.
 * Dropped the dependency on iris, cartopy, pysgrid, and pyugrid.
-* Dropped raster object.
+* Dropped raster object in lieu of the actual x,y or triangle data for plotting.
 * Added an option to reduce the precision for the GeoJSON.
 * Grid parsing is now done with a grid-aware CFVariable object.
 * Dropped parsing grid from iris.cube.
