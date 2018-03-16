@@ -9,4 +9,8 @@ gridgeo
 
 Convert ocean numerical models grids,
 including UGRID and SGRID compliant files,
-to a variety of geo-like objects (GeoJSON, TopoJSON, and Shapefile).
+to a variety of geo-like objects: GeoJSON, and shapefile.
+
+For some usage examples check the notebook folder:
+
+https://github.com/pyoceans/gridgeo/tree/master/notebooks

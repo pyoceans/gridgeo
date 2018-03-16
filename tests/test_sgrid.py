@@ -1,10 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 
-import os
+import gridgeo
 
 from shapely.geometry import MultiPolygon, Polygon
-
-import gridgeo
 
 
 url = 'http://geoport.whoi.edu/thredds/dodsC/clay/usgs/users/jcwarner/Sandy/triple_nest/00_dir_NYB07.ncml'
@@ -26,7 +24,7 @@ def test__str__():
 
 
 def test_outline():
-    assert isinstance(grid.outline, (MultiPolygon,Polygon))
+    assert isinstance(grid.outline, (MultiPolygon, Polygon))
 
 
 def test_polygons():
