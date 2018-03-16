@@ -1,35 +1,12 @@
+from __future__ import absolute_import, division, print_function
+
+
 import os
-import sys
+
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 
+import versioneer
 
-class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def run_tests(self):
-        # Import here, cause outside the eggs aren't loaded.
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
-
-def extract_version(module='gridgeo'):
-    version = None
-    fdir = os.path.dirname(__file__)
-    fnme = os.path.join(fdir, module, '__init__.py')
-    with open(fnme) as fd:
-        for line in fd:
-            if (line.startswith('__version__')):
-                _, version = line.split('=')
-                # Remove quotation characters.
-                version = version.strip()[1:-1]
-                break
-    return version
 
 rootpath = os.path.abspath(os.path.dirname(__file__))
 
@@ -45,30 +22,27 @@ with open('requirements.txt') as f:
     require = f.readlines()
 install_requires = [r.strip() for r in require]
 
-setup(name="gridgeo",
-      version=extract_version(),
+setup(name='gridgeo',
+      version=versioneer.get_version(),
       license=LICENSE,
       long_description=long_description,
-      classifiers=['Development Status :: 5 - Production/Stable',
-                   'Environment :: Console',
-                   'Intended Audience :: Science/Research',
-                   'Intended Audience :: Developers',
-                   'Intended Audience :: Education',
-                   'License :: OSI Approved :: MIT License',
-                   'Operating System :: OS Independent',
-                   'Programming Language :: Python',
-                   'Topic :: Scientific/Engineering',
-                   'Topic :: Education',
-                   ],
-      description=('Convert UGRID and SGRID compliant files to a variety of '
-                   'geo-like objects'),
+      classifiers=[
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Console',
+          'Intended Audience :: Science/Research',
+          'License :: OSI Approved :: MIT License',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python :: 3.6',
+          'Topic :: Scientific/Engineering',
+          ],
+      description=('Convert UGRID, SGRID, and some non-compliant ocean model grids to geo-like objects'),  # noqa
       url='https://github.com/pyoceans/gridgeo',
       platforms='any',
-      keywords=['oceanography', 'grid', 'ugrid', 'sgrid'],
+      keywords=['geojson', 'ocean models', 'ugrid', 'sgrid'],
       install_requires=install_requires,
       packages=['gridgeo'],
       tests_require=['pytest'],
-      cmdclass=dict(test=PyTest),
-      author=["Filipe Fernandes"],
-      author_email="ocefpaf@gmail.com",
+      cmdclass=versioneer.get_cmdclass(),
+      author=['Filipe Fernandes'],
+      author_email='ocefpaf@gmail.com',
       )

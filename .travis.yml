@@ -2,25 +2,38 @@ language: python
 
 sudo: false
 
-env:
-    - CONDA="python=2.7"
-    - CONDA="python=3.4"
-    - CONDA="python=3.5"
+matrix:
+  fast_finish: true
+  include:
+  - python: 3.6
+    env: TEST_TARGET=default
+  - python: 3.6
+    env: TEST_TARGET=coding_standards
+  allow_failures:
+  - python: 3.6
+    env: TEST_TARGET=coding_standards
 
 before_install:
-    - wget http://bit.ly/miniconda -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda update --yes --all
-    - conda config --add channels conda-forge --force
+  - wget http://bit.ly/miniconda -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
+  - conda update conda
+  - conda config --add channels conda-forge --force
+  - conda create -n TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
+  - source activate TEST
 
+# Test source distribution.
 install:
-    - conda create --yes -n TEST $CONDA --file requirements.txt --file requirements-dev.txt
-    - source activate TEST
-    # GUI.
-    - "export DISPLAY=:99.0"
-    - "sh -e /etc/init.d/xvfb start"
+  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install gridgeo-${version}.tar.gz && popd
 
 script:
-    - python setup.py test -a "--verbose"
-    - find . -type f -name "*.py" | xargs flake8 --max-line-length=100
+  - if [[ $TEST_TARGET == 'default' ]]; then
+      cp -r tests /tmp && cd /tmp ;
+      py.test -s -rxs -v tests ;
+    fi
+
+  - if [[ $TEST_TARGET == 'coding_standards' ]]; then
+      flake8 --max-line-length=105 gridgeo ;
+      flake8 --max-line-length=105 tests ;
+    fi

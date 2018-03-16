@@ -1,11 +1,34 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+from copy import copy
+
+from gridgeo.cfvariable import CFVariable
+
+import netCDF4
 
 from shapely.ops import cascaded_union
-from shapely.geometry import MultiPolygon
 
-from .utilities import load_grid, rasterize
 
-__all__ = ['GridGeo']
+def set_precision(coords, precision):
+    result = []
+    try:
+        return round(coords, int(precision))
+    except TypeError:
+        for coord in coords:
+            result.append(set_precision(coord, precision))
+    return result
+
+
+def load_grid(nc, **kwargs):
+    if isinstance(nc, netCDF4.Dataset):
+        pass
+    else:
+        nc = netCDF4.Dataset(nc)
+
+    var = CFVariable(nc, **kwargs)
+    mesh = var.topology()
+    polygons = var.polygons()
+    return polygons, mesh
 
 
 class GridGeo(object):
@@ -14,53 +37,32 @@ class GridGeo(object):
     file/URL) and parse the grid information.
 
     """
-    def __init__(self, nc, mesh_name=None):
+    def __init__(self, nc, **kwargs):
         """
         Return a GridGeo class.
-        `nc` : netCDF4-python object or a netCDF file/URL string
-        `mesh_name` (string) : can me used to override the the netCDF
-                               mesh_name attribute.
+        nc: netCDF4-python object or a netCDF file/URL string
 
         """
 
-        grid, polygons_generator, mesh = load_grid(nc)
+        polygons, mesh = load_grid(nc, **kwargs)
 
-        self.nc = nc
-        self.grid = grid
         self.mesh = mesh
 
-        self._raster = None
         self._outline = None
-        self._polygons = None
         self._geo_interface = None
-        self._polygons_generator = polygons_generator
+        self. polygons = polygons
 
     def __str__(self):
         return '{}'.format(self.mesh)
 
     def __repr__(self):
-        if self.grid:
-            return '{!r}'.format(self.grid)
-        else:
-            return '{!r}'.format(self.nc)
-
-    @property
-    def polygons(self):
-        if self._polygons is None:
-            self._polygons = MultiPolygon(list(self._polygons_generator))
-        return self._polygons
+        return '{!r}'.format(self.outline)
 
     @property
     def outline(self):
         if self._outline is None:
             self._outline = cascaded_union(self.polygons)
         return self._outline
-
-    @property
-    def raster(self):
-        if self._raster is None:
-            self._raster = rasterize(self.polygons)
-        return self._raster
 
     @property
     def __geo_interface__(self):
@@ -70,7 +72,7 @@ class GridGeo(object):
 
     def to_geojson(self, **kw):
         """
-        Return a GeoJSON representation of an s-/u-`grid` object.
+        Return a GeoJSON representation of an grid object.
         The `kw` are based on the simplestyle-spec:
         https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
 
@@ -85,6 +87,9 @@ class GridGeo(object):
         stroke_width = kw.pop('stroke-width', 2)
         fill = kw.pop('fill', '555555')
         fill_opacity = kw.pop('fill-opacity', 0.6)
+        float_precision = kw.pop('float_precision', 6)
+        geometry = copy(self.polygons.__geo_interface__)
+        geometry['coordinates'] = set_precision(geometry['coordinates'], float_precision)
 
         geojson = {'type': 'Feature',
                    'properties': {
@@ -99,5 +104,5 @@ class GridGeo(object):
                        'fill': fill,
                        'fill-opacity': fill_opacity,
                        },
-                   'geometry': self.polygons.__geo_interface__}
+                   'geometry': geometry}
         return geojson
