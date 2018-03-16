@@ -1,10 +1,13 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
-from .gridgeo import GridGeo
-from .utilities import load_grid, rasterize
+from gridgeo.gridgeo import GridGeo
 
-__version__ = '0.2.1'
+__version__ = '1.0.0'
 
-__all__ = ['GridGeo',
-           'load_grid',
-           'rasterize']
+__all__ = [
+    'GridGeo',
+]
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

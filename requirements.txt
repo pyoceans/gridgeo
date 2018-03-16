@@ -1,7 +1,2 @@
 netCDF4
-pysgrid
-pyugrid
-fiona
 shapely
-iris
-cartopy

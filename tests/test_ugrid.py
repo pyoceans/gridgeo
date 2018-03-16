@@ -1,29 +1,20 @@
 from __future__ import (absolute_import, division, print_function)
 
 import os
-import types
 
-import pyugrid
-import numpy as np
-
-from netCDF4 import Dataset
 from shapely.geometry import MultiPolygon, Polygon
 
 import gridgeo
 
-data_path = os.path.join(os.path.dirname(__file__), 'data')
 
-fvcom_string = os.path.join(data_path, 'FVCOM-Nowcast-Agg.nc')
-
-grid = gridgeo.GridGeo(fvcom_string)
+url = 'http://www.smast.umassd.edu:8080/thredds/dodsC/FVCOM/NECOFS/Forecasts/NECOFS_FVCOM_OCEAN_BOSTON_FORECAST.nc'
 
 
-def test_nc_from_string():
-    assert isinstance(grid.nc, str)
-
-
-def test_grid():
-    assert isinstance(grid.grid, pyugrid.UGrid)
+grid = gridgeo.GridGeo(
+    url,
+    standard_name='sea_water_potential_temperature'
+     )
+npoly = 145141
 
 
 def test_mesh():
@@ -34,20 +25,8 @@ def test__str__():
     assert grid.__str__() == grid.mesh
 
 
-def test__repr__():
-    assert grid.__repr__() == grid.grid.__repr__()
-
-
-def test_raster():
-    assert isinstance(grid.raster, np.ndarray)
-
-
-def test_raster_ndim():
-    assert grid.raster.ndim == 3
-
-
 def test_outline():
-    assert isinstance(grid.outline, Polygon)
+    assert isinstance(grid.outline, (MultiPolygon,Polygon))
 
 
 def test_polygons():
@@ -55,32 +34,31 @@ def test_polygons():
 
 
 def test_polygons_len():
-    len(grid.polygons) == 98818
+    assert len(grid.polygons) == npoly
 
 
 def test_geo_interface():
     assert isinstance(grid.__geo_interface__, dict)
 
 
-def test_polygons_generator():
-    assert isinstance(grid._polygons_generator, types.GeneratorType)
-
-
 def test_to_geojson():
-    assert isinstance(grid.to_geojson(), dict)
-
-
-def test_to_geojson_property():
-    geojson = grid.to_geojson()
-
-    properties = ['title', 'description', 'marker-size', 'marker-symbol',
-                  'marker-color', 'stroke', 'stroke-opacity', 'stroke-width',
-                  'fill', 'fill-opacity']
-    for prop in properties:
-        assert prop in geojson['properties'].keys()
-
-
-def test_nc_from_object():
-    nc = Dataset(fvcom_string)
-    grid = gridgeo.GridGeo(nc)
-    assert isinstance(grid.nc, Dataset)
+    geojson = grid.to_geojson(float_precision=2)
+    assert geojson['type'] == 'Feature'
+    assert isinstance(geojson, dict)
+    assert geojson['geometry']['type'] == 'MultiPolygon'
+    assert geojson['properties'] == {
+        'description': '',
+        'fill': '555555',
+        'fill-opacity': 0.6,
+        'marker-color': '7e7e7e',
+        'marker-size': 'medium',
+        'marker-symbol': '',
+        'stroke': '555555',
+        'stroke-opacity': 1,
+        'stroke-width': 2,
+        'title': grid.mesh
+        }
+    coords = geojson['geometry']['coordinates']
+    assert len(coords) == npoly
+    assert len(coords[0][0]) == 4  # triangles are 3+1
+    assert str(coords[0][0][0][0]) == '-70.83'
