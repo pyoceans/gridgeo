@@ -10,7 +10,7 @@ url = 'http://thredds.cencoos.org/thredds/dodsC/CA_DAS.nc'
 grid = gridgeo.GridGeo(
     url,
     standard_name='sea_water_temperature'
-    )
+)
 npoly = 136500
 
 
@@ -54,7 +54,7 @@ def test_to_geojson():
         'stroke-opacity': 1,
         'stroke-width': 2,
         'title': grid.mesh
-        }
+    }
     coords = geojson['geometry']['coordinates']
     assert len(coords) == npoly
     assert len(coords[0][0]) == 5  # squares are 4+1
