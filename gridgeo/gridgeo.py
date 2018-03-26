@@ -63,7 +63,7 @@ class GridGeo(object):
         return '{}'.format(self.mesh)
 
     def __repr__(self):
-        return '{!r}'.format(self.outline)
+        return '<GridGeo: {}>'.format(self.mesh)
 
     @property
     def outline(self):
