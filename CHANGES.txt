@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+Version 1.0.1
+
+* Cast connectivity array to int.
+
 Version 1.0.0
 
 * Construct the grid based on the variables rather the datasets.
