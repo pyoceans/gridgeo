@@ -3,6 +3,8 @@ Lightweight ugrid parser
 
 """
 
+import numpy as np
+
 
 def _valid_x(var):
     names = ['longitude', 'grid_longitude', 'projection_x_coordinate']
@@ -54,6 +56,8 @@ def _mandatory_attr(var, attribute):
 def connectivity_array(connectivity, num_ind):
 
     array = connectivity[:]
+    if not issubclass(array.dtype.type, np.integer):
+        array = np.int_(array)
     if array.shape[0] == num_ind:
         array = array.T
 
@@ -112,7 +116,7 @@ def ugrid(nc):
                 elif _valid_y(nc[name]):
                     y = nc[name][:]
                 else:
-                    raise ValueError(f'Could not recoginize axis for {nc[name]}')
+                    raise ValueError(f'Could not recognize axis for {nc[name]}')
             grid.update({key: {'x': x, 'y': y}})
         if key in valid_connectivity.keys():
             connectivity = nc[mesh_var.getncattr(key).strip()]
