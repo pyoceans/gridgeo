@@ -1,20 +1,27 @@
 """
-Lightweight ugrid parser
+Lightweight UGRID-1.0 parser
 
 """
+
+import netCDF4
 
 import numpy as np
 
 
 def _valid_x(var):
-    names = ['longitude', 'grid_longitude', 'projection_x_coordinate']
+    names = [
+        'longitude',
+        'grid_longitude',
+        'projection_x_coordinate',
+        ]
+
     units = [
         'degrees_east',
         'degree_east',
         'degree_E',
         'degrees_E',
         'degreeE',
-        'degreesE'
+        'degreesE',
     ]
     if getattr(var, 'standard_name', None) in names:
         return True
@@ -27,14 +34,19 @@ def _valid_x(var):
 
 
 def _valid_y(var):
-    names = ['latitude', 'grid_latitude', 'projection_y_coordinate']
+    names = [
+        'latitude',
+        'grid_latitude',
+        'projection_y_coordinate',
+        ]
+
     units = [
         'degrees_north',
         'degree_north',
         'degree_N',
         'degrees_N',
         'degreeN',
-        'degreesN'
+        'degreesN',
     ]
 
     if getattr(var, 'standard_name', None) in names:
@@ -53,8 +65,28 @@ def _mandatory_attr(var, attribute):
     return
 
 
-def connectivity_array(connectivity, num_ind):
+def get_mesh_var(nc):
+    """Returns the mesh_topology variable for `nc` (netCDF4.Dataset object)."""
+    mesh_var = nc.get_variables_by_attributes(cf_role='mesh_topology')
+    if not mesh_var:
+        raise ValueError(f'Could not find mesh_topology variable in the dataset {nc}')
+    if len(mesh_var) > 1:
+        raise ValueError(f'Expected 1 mesh_topology variable, found {len(mesh_var)}.')
 
+    mesh_var = mesh_var[0]
+    _mandatory_attr(mesh_var, attribute='node_coordinates')
+    _mandatory_attr(mesh_var, attribute='topology_dimension')
+
+    if mesh_var.topology_dimension not in (1, 2):
+        raise ValueError(f'Expected mesh dimension to be 1 or 2, got {mesh_var.topology_dimension}.')
+    return mesh_var
+
+
+def connectivity_array(connectivity, num_ind):
+    """Returns the connectivity array for its correspdonding `netCDF4.Variable`
+    according to UGRID-1.0.
+
+    """
     array = connectivity[:]
     if not issubclass(array.dtype.type, np.integer):
         array = np.int_(array)
@@ -72,25 +104,25 @@ def connectivity_array(connectivity, num_ind):
     return array
 
 
-def get_mesh_var(nc):
-    mesh_var = nc.get_variables_by_attributes(cf_role='mesh_topology')
-    if not mesh_var:
-        raise ValueError(f'Could not find mesh_topology in {nc}')
-    if len(mesh_var) > 1:
-        raise ValueError(f'Expected 1 mesh_topology variable, found {len(mesh_var)}.')
-
-    mesh_var = mesh_var[0]
-    _mandatory_attr(mesh_var, attribute='node_coordinates')
-    _mandatory_attr(mesh_var, attribute='topology_dimension')
-
-    if mesh_var.topology_dimension not in (1, 2):
-        raise ValueError(f'Expected mesh dimension to be 1 or 2, got {mesh_var.topology_dimension}.')
-    return mesh_var
-
-
 def ugrid(nc):
+    """Parse UGRID conventions.
+
+    Take a netCDF4.Dataset object or a netCDF4 file/url string
+    and returns a dictionary with the grid nodes, edges, and connectivy matrix.
+
+    """
+    if isinstance(nc, netCDF4.Dataset):
+        pass
+    else:
+        nc = netCDF4.Dataset(nc)
+
     mesh_var = get_mesh_var(nc)
-    valid_coords = ['node_coordinates', 'face_coordinates', 'edge_coordinates', 'boundary_coordinates']
+    valid_coords = (
+        'node_coordinates',
+        'face_coordinates',
+        'edge_coordinates',
+        'boundary_coordinates'
+        )
     valid_connectivity = {
         'face_node_connectivity': 3,
         'face_face_connectivity': 3,
