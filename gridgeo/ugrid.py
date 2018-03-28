@@ -13,7 +13,7 @@ def _valid_x(var):
         'longitude',
         'grid_longitude',
         'projection_x_coordinate',
-        ]
+    ]
 
     units = [
         'degrees_east',
@@ -38,7 +38,7 @@ def _valid_y(var):
         'latitude',
         'grid_latitude',
         'projection_y_coordinate',
-        ]
+    ]
 
     units = [
         'degrees_north',
@@ -122,7 +122,7 @@ def ugrid(nc):
         'face_coordinates',
         'edge_coordinates',
         'boundary_coordinates'
-        )
+    )
     valid_connectivity = {
         'face_node_connectivity': 3,
         'face_face_connectivity': 3,
