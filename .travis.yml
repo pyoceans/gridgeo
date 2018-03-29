@@ -34,6 +34,6 @@ script:
     fi
 
   - if [[ $TEST_TARGET == 'coding_standards' ]]; then
-      flake8 --max-line-length=105 gridgeo ;
+      flake8 --max-line-length=105 --exclude=_version.py gridgeo ;
       flake8 --max-line-length=105 tests ;
     fi
