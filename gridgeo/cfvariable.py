@@ -1,12 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-from itertools import zip_longest
-
 from gridgeo.ugrid import ugrid
 
 import numpy as np
-
-from shapely.geometry import MultiPolygon
 
 
 def _make_grid(coords):
@@ -22,8 +18,7 @@ def _make_grid(coords):
     )
 
     polygons = polygons.reshape(((M-1) * (N-1), 4, L))
-    polygons = [p for p in polygons if not np.isnan(p).any()]
-    return MultiPolygon(list(zip_longest(polygons, [])))
+    return [p for p in polygons if not np.isnan(p).any()]
 
 
 def _filled_masked(arr):
@@ -37,23 +32,21 @@ class CFVariable(object):
     def __init__(self, nc, **kwargs):
         """
         FIXME: this should be done when slicing a CFVariable in pocean-core.
-        This class is only temporary until something better is created:
-        like iris with better slicing, xarray variables that are CF aware,
-        or a CFVariable on pocean-core.
+        This class is only a temporary workaround until something better is created.
 
         """
-        self.nc = nc
-        variables = self.nc.get_variables_by_attributes(**kwargs)
+        self._nc = nc
+        variables = self._nc.get_variables_by_attributes(**kwargs)
         if len(variables) > 1:
             raise ValueError(f'Found more than 1 variable with criteria {kwargs}')
         elif not variables:
             raise ValueError(f'Could not find any variables with criteria {kwargs}')
         else:
-            self.Variable = variables[0]
-        self.coordinates = self.Variable.coordinates.split()
+            self._variable = variables[0]
+        self.coordinates = self._variable.coordinates.split()
 
     def __repr__(self):
-        return self.Variable.__repr__()
+        return self._variable.__repr__()
 
     def _filter_coords(self, variables):
         for var in variables:
@@ -66,14 +59,20 @@ class CFVariable(object):
 
     def t_axis(self):
         tvars = list(set(
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 axis=lambda x: x and x.lower() == 't'
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 standard_name=lambda x: x in ['time', 'forecast_reference_time']
             )
         ))
         return self._filter_coords(tvars)
+
+    def crs(self):
+        crs = getattr(self._variable, 'grid_mapping', None)
+        if crs:
+            crs = self._nc[crs]
+        return crs
 
     def x_axis(self):
         """
@@ -93,13 +92,13 @@ class CFVariable(object):
             'degreesE'
         ]
         xvars = list(set(
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 axis=lambda x: x and x.lower() == 'x'
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 standard_name=lambda x: x and x.lower() in xnames
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 units=lambda x: x and x.lower() in xunits
             )
         ))
@@ -116,13 +115,13 @@ class CFVariable(object):
             'degreesN'
         ]
         yvars = list(set(
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 axis=lambda x: x and x.lower() == 'y'
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 standard_name=lambda x: x and x.lower() in ynames
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 units=lambda x: x and x.lower() in yunits
             )
         ))
@@ -143,13 +142,13 @@ class CFVariable(object):
             'ocean_double_sigma_coordinate'
         ]
         zvars = list(set(
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 axis=lambda x: x and x.lower() == 'z'
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 positive=lambda x: x and x.lower() in ['up', 'down']
             ) +
-            self.nc.get_variables_by_attributes(
+            self._nc.get_variables_by_attributes(
                 standard_name=lambda x: x and x.lower() in znames
             )
         ))
@@ -157,7 +156,7 @@ class CFVariable(object):
 
     def topology(self):
         vnames = ['grid_topology', 'mesh_topology']
-        topologies = self.nc.get_variables_by_attributes(cf_role=lambda v: v in vnames)
+        topologies = self._nc.get_variables_by_attributes(cf_role=lambda v: v in vnames)
 
         if not topologies:
             if self.x_axis().ndim == 1 and self.y_axis().ndim == 1:
@@ -165,7 +164,7 @@ class CFVariable(object):
             elif self.x_axis().ndim == 2 and self.y_axis().ndim == 2:
                 return 'unknown_2d'
             else:
-                raise ValueError(f'Could not identify the topology for {self.nc}.')
+                raise ValueError(f'Could not identify the topology for {self._nc}.')
 
         if topologies and len(topologies) > 1:
             raise ValueError(f'Expected 1 topology variable, got {len(topologies)}.')
@@ -181,12 +180,11 @@ class CFVariable(object):
 
     def polygons(self):
         if self.topology() == 'ugrid':
-            grid = ugrid(self.nc)
+            grid = ugrid(self._nc)
             node_x = grid['nodes']['x']
             node_y = grid['nodes']['y']
             faces = grid['faces']
-            polygons = [(list(zip(node_x[k], node_y[k]))) for k in faces]
-            return MultiPolygon(list(zip_longest(polygons, [])))
+            return [(list(zip(node_x[k], node_y[k]))) for k in faces]
 
         if self.topology() == 'sgrid':
             x, y = self.x_axis()[:], self.y_axis()[:]
