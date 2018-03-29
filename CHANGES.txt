@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 1.2.0
+
+* Return the array of polygons and the shapely geometry.
+* Parse the CRS using the CF grid_mapping attribute.
+* Use the newer and faster unary_union instead of cascaded_union to compute the grid outline.
+
 Version 1.0.1
 
 * Cast connectivity array to int.
