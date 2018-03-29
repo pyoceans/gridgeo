@@ -1,18 +1,22 @@
 from __future__ import absolute_import, division, print_function
 
+import os
 from copy import copy
+from itertools import zip_longest
 
 from gridgeo.cfvariable import CFVariable
 from gridgeo.ugrid import ugrid
 
 import netCDF4
 
-from shapely.ops import cascaded_union
+from shapely.geometry import MultiPolygon
+from shapely.ops import unary_union
 
 try:
     from matplotlib import tri
 except ImportError:
     tri = False
+
 
 def set_precision(coords, precision):
     result = []
@@ -48,6 +52,9 @@ class GridGeo(object):
         self.y = var.y_axis()[:]
         self.mesh = var.topology()
         self.polygons = var.polygons()
+        self._geo_interface = None
+        self._outline = None
+        self._geometry = None
 
         if self.mesh == 'ugrid' and tri:
             grid = ugrid(nc)
@@ -56,25 +63,28 @@ class GridGeo(object):
             faces = grid['faces']
             self.triang = tri.Triangulation(node_x, node_y, triangles=faces)
 
-        self._outline = None
-        self._geo_interface = None
+    @property
+    def geometry(self):
+        if self._geometry is None:
+            self._geometry = MultiPolygon(list(zip_longest(self.polygons, [])))
+        return self._geometry
 
     def __str__(self):
-        return '{}'.format(self.mesh)
+        return f'{self.mesh}'
 
     def __repr__(self):
-        return '<GridGeo: {}>'.format(self.mesh)
+        return f'<GridGeo: {self.mesh}>'
 
     @property
     def outline(self):
         if self._outline is None:
-            self._outline = cascaded_union(self.polygons)
+            self._outline = unary_union(self.geometry)
         return self._outline
 
     @property
     def __geo_interface__(self):
         if self._geo_interface is None:
-            self._geo_interface = self.polygons.__geo_interface__
+            self._geo_interface = self.geometry.__geo_interface__
         return self._geo_interface
 
     def to_geojson(self, **kw):
@@ -95,7 +105,7 @@ class GridGeo(object):
         fill = kw.pop('fill', '555555')
         fill_opacity = kw.pop('fill-opacity', 0.6)
         float_precision = kw.pop('float_precision', 6)
-        geometry = copy(self.polygons.__geo_interface__)
+        geometry = copy(self.geometry.__geo_interface__)
         geometry['coordinates'] = set_precision(geometry['coordinates'], float_precision)
 
         geojson = {'type': 'Feature',
@@ -113,3 +123,42 @@ class GridGeo(object):
                        },
                    'geometry': geometry}
         return geojson
+
+    def save(self, filename, fmt=None, **kw):
+        formats = ['shp', 'geojson']
+        extension = os.path.splitext(filename)[1]
+
+        if not fmt:
+            fmt = extension.lstrip('.')
+
+        if fmt not in formats:
+            raise ValueError(f'Expected shp or geojson, got {fmt}')
+
+        if extension.lstrip('.') != fmt:
+            filename = '.'.join([filename, fmt])
+
+        if fmt == 'geojson':
+            import json
+            geojson = self.to_geojson(**kw)
+            kw = {
+                'sort_keys': True,
+                'indent': 4,
+                'separators': (',', ': ')
+            }
+            with open(filename, 'w') as f:
+                json.dump(geojson, f, **kw)
+
+        if fmt == 'shp':
+            import fiona
+            name = kw.pop('name', self.mesh)
+
+            schema = {
+                'geometry': 'MultiPolygon',
+                'properties': {'name': f'str:{len(name)}'}
+            }
+
+            with fiona.open(filename, 'w', 'ESRI Shapefile', schema) as f:
+                f.write({
+                    'geometry': self.__geo_interface__,
+                    'properties': {'name': name},
+                    })
