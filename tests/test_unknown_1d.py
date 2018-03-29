@@ -1,4 +1,4 @@
-from __future__ import (absolute_import, division, print_function)
+import numpy as np
 
 import gridgeo
 
@@ -12,6 +12,8 @@ grid = gridgeo.GridGeo(
     standard_name='sea_water_temperature'
 )
 npoly = 136500
+
+_iterables = (tuple, list, np.ndarray)
 
 
 def test_mesh():
@@ -27,11 +29,18 @@ def test_outline():
 
 
 def test_polygons():
-    assert isinstance(grid.polygons, MultiPolygon)
+    assert isinstance(grid.polygons, _iterables)
+    assert all([isinstance(p, _iterables) for p in grid.polygons])
+    assert all([len(p) == 4 for p in grid.polygons])
+
+
+def test_geometry():
+    assert isinstance(grid.geometry, MultiPolygon)
 
 
 def test_polygons_len():
     assert len(grid.polygons) == npoly
+    assert len(grid.geometry) == npoly
 
 
 def test_geo_interface():

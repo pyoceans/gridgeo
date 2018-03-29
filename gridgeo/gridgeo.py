@@ -161,4 +161,4 @@ class GridGeo(object):
                 f.write({
                     'geometry': self.__geo_interface__,
                     'properties': {'name': name},
-                    })
+                })
