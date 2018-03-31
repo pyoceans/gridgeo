@@ -1,6 +1,6 @@
-import numpy as np
-
 import gridgeo
+
+import numpy as np
 
 from shapely.geometry import MultiPolygon, Polygon
 
@@ -30,8 +30,8 @@ def test_outline():
 
 def test_polygons():
     assert isinstance(grid.polygons, _iterables)
-    assert all([isinstance(p, _iterables) for p in grid.polygons])
-    assert all([len(p) == 4 for p in grid.polygons])
+    assert all((isinstance(p, _iterables) for p in grid.polygons))
+    assert all((len(p) == 4 for p in grid.polygons))
 
 
 def test_geometry():
