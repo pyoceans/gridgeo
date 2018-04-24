@@ -43,14 +43,11 @@ class CFVariable(object):
             raise ValueError(f'Could not find any variables with criteria {kwargs}')
         else:
             self._variable = variables[0]
-        self.coordinates = self._variable.coordinates.split()
-
-    def __repr__(self):
-        return self._variable.__repr__()
+        self._coords = self._variable.coordinates.split()
 
     def _filter_coords(self, variables):
         for var in variables:
-            if var.name in self.coordinates:
+            if var.name in self._coords:
                 return var
         raise ValueError(f'Could not find a match between {self.coordinates} and {variables}')
 
@@ -75,13 +72,6 @@ class CFVariable(object):
         return crs
 
     def x_axis(self):
-        """
-        CF X axis will have one of the following:
-          * The `axis` property has the value ``'X'``
-          * Units of longitude (see `cf.Units.islongitude` for details)
-          * The `standard_name` property is one of ``'longitude'``,
-            ``'projection_x_coordinate'`` or ``'grid_longitude'``
-        """
         xnames = ['longitude', 'grid_longitude', 'projection_x_coordinate']
         xunits = [
             'degrees_east',
@@ -209,3 +199,94 @@ class CFVariable(object):
             y = _filled_masked(y)
             coords = np.concatenate([x[..., None], y[:][..., None, ]], axis=2)
             return _make_grid(coords)
+
+
+    # Replication of the `netCDF4.Variable` object via composition.
+    def __getitem__(self, key):
+        return self._variable.__getitem__(key)
+
+    def __repr__(self):
+        return self._variable.__repr__()
+
+    @property
+    def units(self):
+        return self._variable.units
+
+    @property
+    def standard_name(self):
+        return self._variable.standard_name
+
+    @property
+    def long_name(self):
+        return self._variable.long_name
+
+    @property
+    def coordinates(self):
+        return self._variable.coordinates
+
+    @property
+    def ndim(self):
+        return self._variable.ndim
+
+    @property
+    def size(self):
+        return self._variable.size
+
+    @property
+    def shape(self):
+        return self._variable.shape
+
+    @property
+    def scale(self):
+        return self._variable.scale
+
+    @property
+    def datatype(self):
+        return self._variable.datatype
+
+    @property
+    def dimensions(self):
+        return self._variable.dimensions
+
+    @property
+    def dtype(self):
+        return self._variable.dtype
+
+    @property
+    def field(self):
+        return self._variable.field
+
+    @property
+    def name(self):
+        return self._variable.name
+
+    @property
+    def mask(self):
+        return self._variable.mask
+
+    @property
+    def _FillValue(self):
+        return self._variable._FillValue
+
+    @property
+    def _ChunkSizes(self):
+        return self._variable._ChunkSizes
+
+    @property
+    def chartostring(self):
+        return self._variable.chartostring
+
+    def chunking(self):
+        return self._variable.chunking()
+
+    def endian(self):
+        return self._variable.endian()
+
+    def filters(self):
+        return self._variable.filters()
+
+    def group(self):
+        return self._variable.group()
+
+    def ncattrs(self):
+        return self._variable.ncattrs()
