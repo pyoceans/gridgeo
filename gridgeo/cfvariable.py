@@ -200,7 +200,6 @@ class CFVariable(object):
             coords = np.concatenate([x[..., None], y[:][..., None, ]], axis=2)
             return _make_grid(coords)
 
-
     # Replication of the `netCDF4.Variable` object via composition.
     def __getitem__(self, key):
         return self._variable.__getitem__(key)
