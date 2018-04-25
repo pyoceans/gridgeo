@@ -6,6 +6,8 @@ import numpy as np
 
 
 def _make_grid(coords):
+    if coords.ndim != 3:
+        raise ValueError(f'Expected 3 dimension array, got {coords.ndim}.')
     M, N, L = coords.shape
     polygons = np.concatenate(
         (
@@ -178,7 +180,7 @@ class CFVariable(object):
 
         if self.topology() == 'sgrid':
             x, y = self.x_axis()[:], self.y_axis()[:]
-            coords = np.concatenate([x[..., None], y[:][..., None, ]], axis=2)
+            coords = np.concatenate([x[..., None], y[..., None, ]], axis=2)
             return _make_grid(coords)
 
         if self.topology() == 'unknown_1d':
@@ -197,7 +199,7 @@ class CFVariable(object):
             # Some non-compliant grids, like NYHOPS, may have missing_value/fill_value.
             x = _filled_masked(x)
             y = _filled_masked(y)
-            coords = np.concatenate([x[..., None], y[:][..., None, ]], axis=2)
+            coords = np.concatenate([x[..., None], y[..., None, ]], axis=2)
             return _make_grid(coords)
 
     # Replication of the `netCDF4.Variable` object via composition.
