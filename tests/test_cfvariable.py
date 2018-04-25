@@ -51,6 +51,6 @@ def test__filled_masked():
         mask=[False, False, True, False],
         dtype=np.float,
         fill_value=0,
-        )
+    )
     arr = _filled_masked(marr)
     assert np.isnan(arr[2])
