@@ -81,17 +81,17 @@ class CFVariable(object):
             'degree_E',
             'degrees_E',
             'degreeE',
-            'degreesE'
+            'degreesE',
         ]
         xvars = list(set(
             self._nc.get_variables_by_attributes(
-                axis=lambda x: x and x.lower() == 'x'
+                axis=lambda x: x and str(x).lower() == 'x'
             ) +
             self._nc.get_variables_by_attributes(
-                standard_name=lambda x: x and x.lower() in xnames
+                standard_name=lambda x: x and str(x).lower() in xnames
             ) +
             self._nc.get_variables_by_attributes(
-                units=lambda x: x and x.lower() in xunits
+                units=lambda x: x and str(x).lower() in xunits
             )
         ))
         return self._filter_coords(xvars)
@@ -104,17 +104,17 @@ class CFVariable(object):
             'degree_N',
             'degrees_N',
             'degreeN',
-            'degreesN'
+            'degreesN',
         ]
         yvars = list(set(
             self._nc.get_variables_by_attributes(
-                axis=lambda x: x and x.lower() == 'y'
+                axis=lambda x: x and str(x).lower() == 'y'
             ) +
             self._nc.get_variables_by_attributes(
-                standard_name=lambda x: x and x.lower() in ynames
+                standard_name=lambda x: x and str(x).lower() in ynames
             ) +
             self._nc.get_variables_by_attributes(
-                units=lambda x: x and x.lower() in yunits
+                units=lambda x: x and str(x).lower() in yunits
             )
         ))
         return self._filter_coords(yvars)
@@ -135,13 +135,13 @@ class CFVariable(object):
         ]
         zvars = list(set(
             self._nc.get_variables_by_attributes(
-                axis=lambda x: x and x.lower() == 'z'
+                axis=lambda x: x and str(x).lower() == 'z'
             ) +
             self._nc.get_variables_by_attributes(
-                positive=lambda x: x and x.lower() in ['up', 'down']
+                positive=lambda x: x and str(x).lower() in ['up', 'down']
             ) +
             self._nc.get_variables_by_attributes(
-                standard_name=lambda x: x and x.lower() in znames
+                standard_name=lambda x: x and str(x).lower() in znames
             )
         ))
         return self._filter_coords(zvars)
