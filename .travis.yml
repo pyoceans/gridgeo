@@ -40,7 +40,7 @@ script:
 
   - if [[ $TEST_TARGET == 'docs' ]]; then
       set -e ;
-      cp notebooks/{quick_intro.ipynb,searchfor.ipynb} docs/source/ ;
+      cp notebooks/gridgeo_tour.ipynb docs/source/ ;
       pushd docs ;
       make clean html linkcheck ;
       popd ;
@@ -57,11 +57,11 @@ deploy:
   provider: pypi
   user: ocefpaf
   password:
-    secure: HD3oiZ3aWzGlmMpoZqsu8uG6v7Zhk/VgqrU+Ch0y0MQFCl8Dagh8Wuo6iLKGWimqSQ3vl3CpXZAhCZRyv/iEZLVf3f5rDiPpQNgvAARZANxMolidGEa+HBhzNOPtJQ78d76ikJ9fe575cO5FEzJi+7NgHFXucyjr+1kINDjPXNvhLeUEaT+C7+uOYrCc0hkznDs0sCwsNGIYvy+cyjQL2FsLmoqRzwsliCTSXNBLJ3fw15BlXGRbHCXT1qf+8kNAGdR650a3c+jazz76ElIdjsg7E//bWmxiePHgBuctnIXNTdMxEi2rMC2QqURV/UEdZMb361bAk3avu1/vuTrOiO86As1hzh+luQVF/jK0x90mpPSlCYN2cyvx2eliLgrDNSzmIiL1H5YYlXSqLX80hb2+YQE8hNwe53SGAhYBO1bktyAuIno4+vK54wShnpqK/alcwvpB3uwx3QNCUKcKEQwzTs6bJVSYWySCyy7fuIGFX+mwdzOOyLrhnWIIimyolpITzbfOqCf/5FnGXoIZ7Kjm4CTGqqaEos4wG2CXDsz8dlgU8xSz1nImZlg6mM+6h/hLxaUtRsw79ZLZZ8/IsKUewWTi/FPJPB8Dri8+3Qa74JppNWVkb7DxNYYErxOGRF6GHGRtsBb4I2stupD2VNGKHFZO1Cg+G9RyUOHAlT4=
+    secure: "seWRIuQziYr29PAnDdnoH8LWiz3LEWu+Eu5Lo5fLWKPbFdT3EYhB8sBTp0hP3ynhFE55qQ/YoYn+HZamf7UqFXrwVOdrHFubjiwSRR+n3N84l3SGlLmMQbI4gwwoCDz4ttB6J0IaCRc6vb6DGDRedncnC2RHstG7oMmBHLKgHj59YJ2nmgLXPq8icgzFMQnoxe9mnS26hvwJF9xIwZA8j5IojnA52iD+mAsVSi9kjg+T9e+6wBg47R8d8s39Gy79zEo2NDHDQaX08Yma7gpvE2yuxseoIN4szToLJa2fIKJbBBn/dXBqEXTZ/YWWgMha0XRGTB+EDXhgLV5IFCb6oR01I6+JEj56rQdFaqMixuC1jwwSqRjDmTsERZzLLNhwJ5ifl9v7Ky0wAvhZ4khZ3h2KWoHbFOB0L3K8foZXz5vLZav/1iD6YW48812zgAqbabuTuXMoSU71r9Qv8PhPZZ3xfVEku6UkYdyY9+vvxHYriKr3P/cnBr9vBx2Nz2shnR6bwc2WgAmsFOZqsQuPT2E4LOK3Jr1FOcOpCLwFod4kaoOFoMVbJ4wY/qKQDRQ1cIvRcpQgsw0Vmsr07k762SPrrf67ay+rcZR8JigIst3WEgiZwEwIOEBe78WTlLNtYE8MmmxVjhnrRNa2a6Cm2tn5A3JMxvMPSFB3LzDp7U0="
   distributions: sdist bdist_wheel
   upload_docs: no
   on:
-    repo: pyoceans/erddapy
+    repo: pyoceans/gridgeo
     tags: true
     python: 3.6
     all_branches: master
