@@ -1,3 +1,6 @@
+cartopy
+doctr
+fiona
 flake8
 flake8-builtins
 flake8-comprehensions
@@ -5,6 +8,11 @@ flake8-import-order
 flake8-mutable
 flake8-print
 flake8-quotes
+folium
 hypothesis
+matplotlib
+nbsphinx
 pycodestyle
 pytest
+sphinx
+twine
