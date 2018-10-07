@@ -5,7 +5,7 @@ import numpy as np
 from shapely.geometry import MultiPolygon, Polygon
 
 
-url = 'http://thredds.cencoos.org/thredds/dodsC/CA_DAS.nc'
+url = 'http://thredds.cencoos.org/thredds/dodsC/CENCOOS_CA_ROMS_FCST.nc'
 
 grid = gridgeo.GridGeo(
     url,
