@@ -1,14 +1,17 @@
+from pathlib import Path
+
 import gridgeo
 
 import numpy as np
 
 from shapely.geometry import MultiPolygon, Polygon
 
+p = Path(__file__).parent.absolute()
 
-url = 'http://colossus.dl.stevens-tech.edu:8080/thredds/dodsC/latest/Complete_gcmplt.nc'
+fname = p.joinpath('data', 'unknown_2d.nc')
 
 grid = gridgeo.GridGeo(
-    url,
+    fname,
     standard_name='sea_water_temperature'
     )
 npoly = 12706
