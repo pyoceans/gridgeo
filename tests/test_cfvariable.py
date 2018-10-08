@@ -12,10 +12,10 @@ from shapely.geometry import MultiPolygon
 
 
 @pytest.fixture
-def make_coords():
+def coords():
     x = y = np.array([1, 2, 3, 4], np.int)
     x, y = np.meshgrid(x, y)
-    return np.concatenate([x[..., None], y[..., None, ]], axis=2)
+    yield np.concatenate([x[..., None], y[..., None, ]], axis=2)
 
 
 def test__make_grid_raises():
@@ -27,16 +27,14 @@ def test__make_grid_raises():
         _make_grid(np.empty(shape.example()))
 
 
-def test__valid_coords():
-    coords = make_coords()
+def test__valid_coords(coords):
     polygons = _make_grid(coords)
     assert len(polygons) == 9
     assert (polygons[0] == np.array([[1, 1], [2, 1], [2, 2], [1, 2]], np.int)).all()
     assert (polygons[-1] == np.array([[3, 3], [4, 3], [4, 4], [3, 4]], np.int)).all()
 
 
-def test__valid_geometry():
-    coords = make_coords()
+def test__valid_geometry(coords):
     polygons = _make_grid(coords)
     geometry = MultiPolygon(list(zip_longest(polygons, [])))
     assert len(geometry) == 9
