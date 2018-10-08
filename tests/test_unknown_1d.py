@@ -1,15 +1,27 @@
+from pathlib import Path
+
 import gridgeo
 
 import numpy as np
 
 from shapely.geometry import MultiPolygon, Polygon
 
+# The netcdf file used here is based on
+# $ url="http://colossus.dl.stevens-tech.edu:8080/thredds/dodsC/latest/Complete_gcmplt.nc"
+# $ ncks -d time,0 -d sigma,0 -v temp $url unknown_2d.nc
+#
+# $ url="http://thredds.cencoos.org/thredds/dodsC/CENCOOS_CA_ROMS_FCST.nc"
+# $ ncks -d time,0 -d depth,0 -v temp $url unknown_1d.nc
+#
+# then a .cdl was created and edit to reduce the size on the .nc.
 
-url = 'http://thredds.cencoos.org/thredds/dodsC/CENCOOS_CA_ROMS_FCST.nc'
+p = Path(__file__).parent.absolute()
+
+fname = p.joinpath('data', 'unknown_1d.nc')
 
 grid = gridgeo.GridGeo(
-    url,
-    standard_name='sea_water_temperature'
+    fname,
+    standard_name='sea_water_potential_temperature'
 )
 npoly = 136500
 
@@ -67,4 +79,4 @@ def test_to_geojson():
     coords = geojson['geometry']['coordinates']
     assert len(coords) == npoly
     assert len(coords[0][0]) == 5  # squares are 4+1
-    assert str(coords[0][0][0][0]) == '-127.5'
+    assert str(coords[0][0][0][0]) == '232.5'

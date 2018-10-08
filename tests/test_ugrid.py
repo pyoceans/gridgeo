@@ -1,18 +1,20 @@
+from pathlib import Path
+
 import gridgeo
 
 import numpy as np
 
 from shapely.geometry import MultiPolygon, Polygon
 
+p = Path(__file__).parent.absolute()
 
-url = 'http://www.smast.umassd.edu:8080/thredds/dodsC/FVCOM/NECOFS/Forecasts/NECOFS_FVCOM_OCEAN_BOSTON_FORECAST.nc'  # noqa
-
+fname = p.joinpath('data', 'ugrid.nc')
 
 grid = gridgeo.GridGeo(
-    url,
+    fname,
     standard_name='sea_water_potential_temperature'
      )
-npoly = 145141
+npoly = 98818
 
 _iterables = (tuple, list, np.ndarray)
 
@@ -68,4 +70,4 @@ def test_to_geojson():
     coords = geojson['geometry']['coordinates']
     assert len(coords) == npoly
     assert len(coords[0][0]) == 4  # triangles are 3+1
-    assert str(coords[0][0][0][0]) == '-70.83'
+    assert str(coords[0][0][0][0]) == '-87.25'
