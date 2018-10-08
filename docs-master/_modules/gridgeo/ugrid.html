@@ -1,0 +1,293 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>gridgeo.ugrid &#8212; gridgeo 1.4.0+12.gefed6f7 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pyoceans&repo=gridgeo&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/pyoceans/gridgeo">
+    <img
+        alt="https://secure.travis-ci.org/pyoceans/gridgeo.svg?branch=master"
+        src="https://secure.travis-ci.org/pyoceans/gridgeo.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gridgeo_tour.html">gridgeo tour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gridgeo.html"><code class="docutils literal notranslate"><span class="pre">gridgeo</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gridgeo.html#module-gridgeo.cfvariable"><code class="docutils literal notranslate"><span class="pre">cfvariable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gridgeo.html#module-gridgeo.ugrid"><code class="docutils literal notranslate"><span class="pre">ugrid</span></code></a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for gridgeo.ugrid</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Lightweight UGRID-1.0 parser</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">netCDF4</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">_valid_x</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;grid_longitude&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;projection_x_coordinate&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;degrees_east&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degree_east&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degree_E&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degrees_E&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degreeE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degreesE&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># Units are mandatory, fail if not present.</span>
+    <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">units</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span> <span class="nf">_valid_y</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;grid_latitude&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;projection_y_coordinate&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;degrees_north&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degree_north&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degree_N&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degrees_N&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degreeN&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;degreesN&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># Units are mandatory, fail if not present.</span>
+    <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">units</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span> <span class="nf">_mandatory_attr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not find required attribute </span><span class="si">{attribute}</span><span class="s1"> in </span><span class="si">{var}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">return</span>
+
+
+<div class="viewcode-block" id="get_mesh_var"><a class="viewcode-back" href="../../gridgeo.html#gridgeo.ugrid.get_mesh_var">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_var</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the mesh_topology variable for `nc` (netCDF4.Dataset object).&quot;&quot;&quot;</span>
+    <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">get_variables_by_attributes</span><span class="p">(</span><span class="n">cf_role</span><span class="o">=</span><span class="s1">&#39;mesh_topology&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh_var</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not find mesh_topology variable in the dataset </span><span class="si">{nc}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Expected 1 mesh_topology variable, found {len(mesh_var)}.&#39;</span><span class="p">)</span>
+
+    <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">mesh_var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;node_coordinates&#39;</span><span class="p">)</span>
+    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;topology_dimension&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mesh_var</span><span class="o">.</span><span class="n">topology_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Expected mesh dimension to be 1 or 2, got </span><span class="si">{mesh_var.topology_dimension}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh_var</span></div>
+
+
+<div class="viewcode-block" id="connectivity_array"><a class="viewcode-back" href="../../gridgeo.html#gridgeo.ugrid.connectivity_array">[docs]</a><span class="k">def</span> <span class="nf">connectivity_array</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="n">num_ind</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the connectivity array for its correspdonding `netCDF4.Variable`</span>
+<span class="sd">    according to UGRID-1.0.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">connectivity</span><span class="p">[:]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">num_ind</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s1">&#39;start_index&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">start_index</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">-=</span> <span class="n">start_index</span>
+
+    <span class="c1"># FIXME: This won&#39;t work for more than one flag value.</span>
+    <span class="n">flag_values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flag_values</span><span class="p">:</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">array</span> <span class="o">==</span> <span class="n">flag_values</span> <span class="o">-</span> <span class="n">start_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values</span>
+    <span class="k">return</span> <span class="n">array</span></div>
+
+
+<div class="viewcode-block" id="ugrid"><a class="viewcode-back" href="../../gridgeo.html#gridgeo.ugrid.ugrid">[docs]</a><span class="k">def</span> <span class="nf">ugrid</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse UGRID conventions.</span>
+
+<span class="sd">    Take a netCDF4.Dataset object or a netCDF4 file/url string</span>
+<span class="sd">    and returns a dictionary with the grid nodes, edges, and connectivy matrix.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+
+    <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">get_mesh_var</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+    <span class="n">valid_coords</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;node_coordinates&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;face_coordinates&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;edge_coordinates&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;boundary_coordinates&#39;</span>
+    <span class="p">)</span>
+    <span class="n">valid_connectivity</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;face_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;face_face_connectivity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;boundary_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;edge_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Used for compatibility with pyugrid.</span>
+    <span class="n">rename</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;node_coordinates&#39;</span><span class="p">:</span> <span class="s1">&#39;nodes&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;face_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;faces&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;boundary_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;boundaries&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;edge_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;edges&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mesh_var</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valid_coords</span><span class="p">:</span>
+            <span class="n">coord_names</span> <span class="o">=</span> <span class="n">mesh_var</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">coord_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_valid_x</span><span class="p">(</span><span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">]):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">][:]</span>
+                <span class="k">elif</span> <span class="n">_valid_y</span><span class="p">(</span><span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">]):</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">][:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not recognize axis for </span><span class="si">{nc[name]}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">}})</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valid_connectivity</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">connectivity</span> <span class="o">=</span> <span class="n">nc</span><span class="p">[</span><span class="n">mesh_var</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="n">num_ind</span> <span class="o">=</span> <span class="n">valid_connectivity</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">connectivity_array</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="n">num_ind</span><span class="p">)</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">array</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="n">rename</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, Filipe Fernandes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/pyoceans/gridgeo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
