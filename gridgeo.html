@@ -1,0 +1,349 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>gridgeo &#8212; gridgeo 1.4.0+12.gefed6f7 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="gridgeo tour" href="gridgeo_tour.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=pyoceans&repo=gridgeo&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/pyoceans/gridgeo">
+    <img
+        alt="https://secure.travis-ci.org/pyoceans/gridgeo.svg?branch=master"
+        src="https://secure.travis-ci.org/pyoceans/gridgeo.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gridgeo_tour.html">gridgeo tour</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">gridgeo</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-gridgeo.cfvariable"><code class="docutils literal notranslate"><span class="pre">cfvariable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-gridgeo.ugrid"><code class="docutils literal notranslate"><span class="pre">ugrid</span></code></a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="gridgeo_tour.html" title="previous chapter">gridgeo tour</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-gridgeo.gridgeo">
+<span id="gridgeo"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridgeo</span></code><a class="headerlink" href="#module-gridgeo.gridgeo" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="gridgeo.gridgeo.GridGeo">
+<em class="property">class </em><code class="descclassname">gridgeo.gridgeo.</code><code class="descname">GridGeo</code><span class="sig-paren">(</span><em>nc</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/gridgeo.html#GridGeo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.gridgeo.GridGeo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>GridGeo class takes a nc-like object (netCDF4-python or a netCDF
+file/URL) and parse the grid information.</p>
+<dl class="attribute">
+<dt id="gridgeo.gridgeo.GridGeo.geometry">
+<code class="descname">geometry</code><a class="headerlink" href="#gridgeo.gridgeo.GridGeo.geometry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.gridgeo.GridGeo.outline">
+<code class="descname">outline</code><a class="headerlink" href="#gridgeo.gridgeo.GridGeo.outline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.gridgeo.GridGeo.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>fmt=None</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/gridgeo.html#GridGeo.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.gridgeo.GridGeo.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.gridgeo.GridGeo.to_geojson">
+<code class="descname">to_geojson</code><span class="sig-paren">(</span><em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/gridgeo.html#GridGeo.to_geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.gridgeo.GridGeo.to_geojson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a GeoJSON representation of an grid object.
+The <cite>kw</cite> are based on the simplestyle-spec:
+<a class="reference external" href="https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0">https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0</a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gridgeo.gridgeo.set_precision">
+<code class="descclassname">gridgeo.gridgeo.</code><code class="descname">set_precision</code><span class="sig-paren">(</span><em>coords</em>, <em>precision</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/gridgeo.html#set_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.gridgeo.set_precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gridgeo.cfvariable">
+<span id="cfvariable"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">cfvariable</span></code><a class="headerlink" href="#module-gridgeo.cfvariable" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="gridgeo.cfvariable.CFVariable">
+<em class="property">class </em><code class="descclassname">gridgeo.cfvariable.</code><code class="descname">CFVariable</code><span class="sig-paren">(</span><em>nc</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.axis">
+<code class="descname">axis</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.chartostring">
+<code class="descname">chartostring</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.chartostring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.chunking">
+<code class="descname">chunking</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.chunking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.chunking" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.coordinates">
+<code class="descname">coordinates</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.crs">
+<code class="descname">crs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.crs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.crs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.datatype">
+<code class="descname">datatype</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.datatype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.endian">
+<code class="descname">endian</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.endian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.endian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.field">
+<code class="descname">field</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.filters">
+<code class="descname">filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.filters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.group">
+<code class="descname">group</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.long_name">
+<code class="descname">long_name</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.long_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.mask">
+<code class="descname">mask</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.name">
+<code class="descname">name</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.ncattrs">
+<code class="descname">ncattrs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.ncattrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.ncattrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.ndim">
+<code class="descname">ndim</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.ndim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.polygons">
+<code class="descname">polygons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.polygons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.scale">
+<code class="descname">scale</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.scale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.shape">
+<code class="descname">shape</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.size">
+<code class="descname">size</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.standard_name">
+<code class="descname">standard_name</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.standard_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.t_axis">
+<code class="descname">t_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.t_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.t_axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.topology">
+<code class="descname">topology</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.topology" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridgeo.cfvariable.CFVariable.units">
+<code class="descname">units</code><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.units" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.x_axis">
+<code class="descname">x_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.x_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.x_axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.y_axis">
+<code class="descname">y_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.y_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.y_axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridgeo.cfvariable.CFVariable.z_axis">
+<code class="descname">z_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/cfvariable.html#CFVariable.z_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.cfvariable.CFVariable.z_axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridgeo.ugrid">
+<span id="ugrid"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ugrid</span></code><a class="headerlink" href="#module-gridgeo.ugrid" title="Permalink to this headline">¶</a></h1>
+<p>Lightweight UGRID-1.0 parser</p>
+<dl class="function">
+<dt id="gridgeo.ugrid.connectivity_array">
+<code class="descclassname">gridgeo.ugrid.</code><code class="descname">connectivity_array</code><span class="sig-paren">(</span><em>connectivity</em>, <em>num_ind</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/ugrid.html#connectivity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.ugrid.connectivity_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the connectivity array for its correspdonding <cite>netCDF4.Variable</cite>
+according to UGRID-1.0.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridgeo.ugrid.get_mesh_var">
+<code class="descclassname">gridgeo.ugrid.</code><code class="descname">get_mesh_var</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/ugrid.html#get_mesh_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.ugrid.get_mesh_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mesh_topology variable for <cite>nc</cite> (netCDF4.Dataset object).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridgeo.ugrid.ugrid">
+<code class="descclassname">gridgeo.ugrid.</code><code class="descname">ugrid</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridgeo/ugrid.html#ugrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridgeo.ugrid.ugrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse UGRID conventions.</p>
+<p>Take a netCDF4.Dataset object or a netCDF4 file/url string
+and returns a dictionary with the grid nodes, edges, and connectivy matrix.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, Filipe Fernandes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/gridgeo.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/pyoceans/gridgeo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
