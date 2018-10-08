@@ -2,6 +2,11 @@ language: minimal
 
 sudo: false
 
+env:
+  global:
+    # Doctr deploy key for pyoceans/gridgeo
+    - secure: "kgfjspUuwBiD2lbfG4PF2YZpYVSH4IKxNzcMAX9Sms4POZGnn0OiPXs93SWhi6x349OBbh2eEtb9t6D46fv9KwKR0KluTE2WvGlsUlhHc5FDfqKGtHPnM89Ya2L4mBp/BkWfvZQ6ImqAY73k74aT20dcJkUEcuvJPFQIc+UdlJh0ie1KnlIBLdX4odDeVcqlEayl6YQEDdOfc7ZI2II6GZiDyR5goIa5EqCDqhUfX0b7QKn+unNVWkoB0aoHg7VT28cWF6iytnoklJDUAGRVDe03p20LIVqLXLD8FnTn+GjfRCuMj+Mpp2zqKbBGq/P2QQbUDrc5QpKgBOgp9dUHJaRKC6P/2+Qm9JcHobmqUykw9e5t6aSqNVU+mclZ9jKf5KW3K/M0OeZmEToN4m4xrx18r0A+qF9QfOQlWGvDYN7pGoRN4tPOk3RvJ91/57u8UyT5XedbidXlOg2Y35d1cgW4oP3kbHzsIcyXTOabYSnBoaxwesNvzePaSwHt8bL40HysMcuZUbA4QHEpOY+4GKN5xq9c6Abc59eRZ7D/76qpcj7ycDHMvnu5oSjO8L8rXBSInXaA+UnlTRTc7vJzJMrcGQXVj+cx7eBo9l6mRvrE7fl3UMOisnRo065MO96LbdZMLBt1d/t4U3spJ5ENxyEU2A8wUEpovQZvogSGPnU="
+
 matrix:
   fast_finish: true
   include:
