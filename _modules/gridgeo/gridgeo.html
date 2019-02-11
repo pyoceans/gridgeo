@@ -6,13 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>gridgeo.gridgeo &#8212; gridgeo 1.4.0+12.gefed6f7 documentation</title>
+    <title>gridgeo.gridgeo &#8212; gridgeo 1.4.0+15.g3728ef5 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -112,13 +113,12 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">zip_longest</span>
 
-<span class="kn">from</span> <span class="nn">gridgeo.cfvariable</span> <span class="k">import</span> <span class="n">CFVariable</span>
-<span class="kn">from</span> <span class="nn">gridgeo.ugrid</span> <span class="k">import</span> <span class="n">ugrid</span>
-
 <span class="kn">import</span> <span class="nn">netCDF4</span>
-
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">MultiPolygon</span>
 <span class="kn">from</span> <span class="nn">shapely.ops</span> <span class="k">import</span> <span class="n">unary_union</span>
+
+<span class="kn">from</span> <span class="nn">gridgeo.cfvariable</span> <span class="k">import</span> <span class="n">CFVariable</span>
+<span class="kn">from</span> <span class="nn">gridgeo.ugrid</span> <span class="k">import</span> <span class="n">ugrid</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">tri</span>
@@ -142,6 +142,7 @@
 <span class="sd">    file/URL) and parse the grid information.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a GridGeo class.</span>
@@ -164,11 +165,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_outline</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">==</span> <span class="s1">&#39;ugrid&#39;</span> <span class="ow">and</span> <span class="n">tri</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">==</span> <span class="s2">&quot;ugrid&quot;</span> <span class="ow">and</span> <span class="n">tri</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">ugrid</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
-            <span class="n">node_x</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-            <span class="n">node_y</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
-            <span class="n">faces</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s1">&#39;faces&#39;</span><span class="p">]</span>
+            <span class="n">node_x</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>
+            <span class="n">node_y</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">]</span>
+            <span class="n">faces</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="s2">&quot;faces&quot;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">triang</span> <span class="o">=</span> <span class="n">tri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">node_x</span><span class="p">,</span> <span class="n">node_y</span><span class="p">,</span> <span class="n">triangles</span><span class="o">=</span><span class="n">faces</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -178,10 +179,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.mesh}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.mesh}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;&lt;GridGeo: </span><span class="si">{self.mesh}</span><span class="s1">&gt;&#39;</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&lt;GridGeo: </span><span class="si">{self.mesh}</span><span class="s2">&gt;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">outline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -202,74 +203,78 @@
 <span class="sd">        https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">marker_size</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;marker-size&#39;</span><span class="p">,</span> <span class="s1">&#39;medium&#39;</span><span class="p">)</span>
-        <span class="n">marker_symbol</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;marker-symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">marker_color</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;marker-color&#39;</span><span class="p">,</span> <span class="s1">&#39;7e7e7e&#39;</span><span class="p">)</span>
-        <span class="n">stroke</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stroke&#39;</span><span class="p">,</span> <span class="s1">&#39;555555&#39;</span><span class="p">)</span>
-        <span class="n">stroke_opacity</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stroke-opacity&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">stroke_width</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stroke-width&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">fill</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;555555&#39;</span><span class="p">)</span>
-        <span class="n">fill_opacity</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fill-opacity&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
-        <span class="n">float_precision</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;float_precision&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">marker_size</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;marker-size&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+        <span class="n">marker_symbol</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;marker-symbol&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">marker_color</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;marker-color&quot;</span><span class="p">,</span> <span class="s2">&quot;7e7e7e&quot;</span><span class="p">)</span>
+        <span class="n">stroke</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;555555&quot;</span><span class="p">)</span>
+        <span class="n">stroke_opacity</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stroke-opacity&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">stroke_width</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stroke-width&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">fill</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;555555&quot;</span><span class="p">)</span>
+        <span class="n">fill_opacity</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fill-opacity&quot;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">float_precision</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;float_precision&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">geometry</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">__geo_interface__</span><span class="p">)</span>
-        <span class="n">geometry</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_precision</span><span class="p">(</span><span class="n">geometry</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> <span class="n">float_precision</span><span class="p">)</span>
+        <span class="n">geometry</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_precision</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">],</span> <span class="n">float_precision</span>
+        <span class="p">)</span>
 
-        <span class="n">geojson</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Feature&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
-                       <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
-                       <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
-                       <span class="s1">&#39;marker-size&#39;</span><span class="p">:</span> <span class="n">marker_size</span><span class="p">,</span>
-                       <span class="s1">&#39;marker-symbol&#39;</span><span class="p">:</span> <span class="n">marker_symbol</span><span class="p">,</span>
-                       <span class="s1">&#39;marker-color&#39;</span><span class="p">:</span> <span class="n">marker_color</span><span class="p">,</span>
-                       <span class="s1">&#39;stroke&#39;</span><span class="p">:</span> <span class="n">stroke</span><span class="p">,</span>
-                       <span class="s1">&#39;stroke-opacity&#39;</span><span class="p">:</span> <span class="n">stroke_opacity</span><span class="p">,</span>
-                       <span class="s1">&#39;stroke-width&#39;</span><span class="p">:</span> <span class="n">stroke_width</span><span class="p">,</span>
-                       <span class="s1">&#39;fill&#39;</span><span class="p">:</span> <span class="n">fill</span><span class="p">,</span>
-                       <span class="s1">&#39;fill-opacity&#39;</span><span class="p">:</span> <span class="n">fill_opacity</span><span class="p">,</span>
-                       <span class="p">},</span>
-                   <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="n">geometry</span><span class="p">}</span>
+        <span class="n">geojson</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Feature&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+                <span class="s2">&quot;marker-size&quot;</span><span class="p">:</span> <span class="n">marker_size</span><span class="p">,</span>
+                <span class="s2">&quot;marker-symbol&quot;</span><span class="p">:</span> <span class="n">marker_symbol</span><span class="p">,</span>
+                <span class="s2">&quot;marker-color&quot;</span><span class="p">:</span> <span class="n">marker_color</span><span class="p">,</span>
+                <span class="s2">&quot;stroke&quot;</span><span class="p">:</span> <span class="n">stroke</span><span class="p">,</span>
+                <span class="s2">&quot;stroke-opacity&quot;</span><span class="p">:</span> <span class="n">stroke_opacity</span><span class="p">,</span>
+                <span class="s2">&quot;stroke-width&quot;</span><span class="p">:</span> <span class="n">stroke_width</span><span class="p">,</span>
+                <span class="s2">&quot;fill&quot;</span><span class="p">:</span> <span class="n">fill</span><span class="p">,</span>
+                <span class="s2">&quot;fill-opacity&quot;</span><span class="p">:</span> <span class="n">fill_opacity</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">geometry</span><span class="p">,</span>
+        <span class="p">}</span>
         <span class="k">return</span> <span class="n">geojson</span></div>
 
 <div class="viewcode-block" id="GridGeo.save"><a class="viewcode-back" href="../../gridgeo.html#gridgeo.gridgeo.GridGeo.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="n">formats</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shp&#39;</span><span class="p">,</span> <span class="s1">&#39;geojson&#39;</span><span class="p">]</span>
+        <span class="n">formats</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;shp&quot;</span><span class="p">,</span> <span class="s2">&quot;geojson&quot;</span><span class="p">]</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fmt</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Expected shp or geojson, got </span><span class="si">{fmt}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Expected shp or geojson, got </span><span class="si">{fmt}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">fmt</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">filename</span><span class="p">,</span> <span class="n">fmt</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">fmt</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">filename</span><span class="p">,</span> <span class="n">fmt</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;geojson&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;geojson&quot;</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">json</span>
+
             <span class="n">geojson</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_geojson</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-            <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;sort_keys&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                <span class="s1">&#39;indent&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                <span class="s1">&#39;separators&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)</span>
-            <span class="p">}</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sort_keys&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;indent&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;separators&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)}</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">geojson</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;shp&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;shp&quot;</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">fiona</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
 
             <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;str:{len(name)}&#39;</span><span class="p">}</span>
+                <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;MultiPolygon&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">f</span><span class="s2">&quot;str:{len(name)}&quot;</span><span class="p">},</span>
             <span class="p">}</span>
 
-            <span class="k">with</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;ESRI Shapefile&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">({</span>
-                    <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__geo_interface__</span><span class="p">,</span>
-                    <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span>
-                <span class="p">})</span></div></div>
+            <span class="k">with</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="s2">&quot;ESRI Shapefile&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__geo_interface__</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span>
+                    <span class="p">}</span>
+                <span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -282,7 +287,7 @@
       &copy;2017, Filipe Fernandes.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
