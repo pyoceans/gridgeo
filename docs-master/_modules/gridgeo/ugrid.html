@@ -6,13 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>gridgeo.ugrid &#8212; gridgeo 1.4.0+12.gefed6f7 documentation</title>
+    <title>gridgeo.ugrid &#8212; gridgeo 1.4.0+15.g3728ef5 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -112,28 +113,23 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <span class="k">def</span> <span class="nf">_valid_x</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;grid_longitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;projection_x_coordinate&#39;</span><span class="p">,</span>
-    <span class="p">]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">,</span> <span class="s2">&quot;grid_longitude&quot;</span><span class="p">,</span> <span class="s2">&quot;projection_x_coordinate&quot;</span><span class="p">]</span>
 
     <span class="n">units</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;degrees_east&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degree_east&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degree_E&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degrees_E&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degreeE&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degreesE&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;degrees_east&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degree_east&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degree_E&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degrees_E&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degreeE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degreesE&quot;</span><span class="p">,</span>
     <span class="p">]</span>
-    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;standard_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="c1"># Units are mandatory, fail if not present.</span>
     <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">units</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
@@ -142,24 +138,20 @@
 
 
 <span class="k">def</span> <span class="nf">_valid_y</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;grid_latitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;projection_y_coordinate&#39;</span><span class="p">,</span>
-    <span class="p">]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;grid_latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;projection_y_coordinate&quot;</span><span class="p">]</span>
 
     <span class="n">units</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;degrees_north&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degree_north&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degree_N&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degrees_N&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degreeN&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;degreesN&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;degrees_north&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degree_north&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degree_N&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degrees_N&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degreeN&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;degreesN&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
-    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;standard_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="c1"># Units are mandatory, fail if not present.</span>
     <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">units</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
@@ -169,24 +161,32 @@
 
 <span class="k">def</span> <span class="nf">_mandatory_attr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not find required attribute </span><span class="si">{attribute}</span><span class="s1"> in </span><span class="si">{var}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;Could not find required attribute </span><span class="si">{attribute}</span><span class="s2"> in </span><span class="si">{var}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span>
 
 
 <div class="viewcode-block" id="get_mesh_var"><a class="viewcode-back" href="../../gridgeo.html#gridgeo.ugrid.get_mesh_var">[docs]</a><span class="k">def</span> <span class="nf">get_mesh_var</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the mesh_topology variable for `nc` (netCDF4.Dataset object).&quot;&quot;&quot;</span>
-    <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">get_variables_by_attributes</span><span class="p">(</span><span class="n">cf_role</span><span class="o">=</span><span class="s1">&#39;mesh_topology&#39;</span><span class="p">)</span>
+    <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">get_variables_by_attributes</span><span class="p">(</span><span class="n">cf_role</span><span class="o">=</span><span class="s2">&quot;mesh_topology&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh_var</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not find mesh_topology variable in the dataset </span><span class="si">{nc}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;Could not find mesh_topology variable in the dataset </span><span class="si">{nc}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Expected 1 mesh_topology variable, found {len(mesh_var)}.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;Expected 1 mesh_topology variable, found {len(mesh_var)}.&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">mesh_var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;node_coordinates&#39;</span><span class="p">)</span>
-    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;topology_dimension&#39;</span><span class="p">)</span>
+    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;node_coordinates&quot;</span><span class="p">)</span>
+    <span class="n">_mandatory_attr</span><span class="p">(</span><span class="n">mesh_var</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;topology_dimension&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mesh_var</span><span class="o">.</span><span class="n">topology_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Expected mesh dimension to be 1 or 2, got </span><span class="si">{mesh_var.topology_dimension}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;Expected mesh dimension to be 1 or 2, got </span><span class="si">{mesh_var.topology_dimension}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">mesh_var</span></div>
 
 
@@ -201,12 +201,12 @@
     <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">num_ind</span><span class="p">:</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s1">&#39;start_index&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s2">&quot;start_index&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">start_index</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">array</span> <span class="o">-=</span> <span class="n">start_index</span>
 
     <span class="c1"># FIXME: This won&#39;t work for more than one flag value.</span>
-    <span class="n">flag_values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">flag_values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">connectivity</span><span class="p">,</span> <span class="s2">&quot;flag_values&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">flag_values</span><span class="p">:</span>
         <span class="n">array</span><span class="p">[</span><span class="n">array</span> <span class="o">==</span> <span class="n">flag_values</span> <span class="o">-</span> <span class="n">start_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_values</span>
     <span class="k">return</span> <span class="n">array</span></div>
@@ -226,24 +226,24 @@
 
     <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">get_mesh_var</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
     <span class="n">valid_coords</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;node_coordinates&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;face_coordinates&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;edge_coordinates&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;boundary_coordinates&#39;</span>
+        <span class="s2">&quot;node_coordinates&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_coordinates&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;edge_coordinates&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;boundary_coordinates&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">valid_connectivity</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;face_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s1">&#39;face_face_connectivity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s1">&#39;boundary_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s1">&#39;edge_node_connectivity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;face_node_connectivity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;face_face_connectivity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;boundary_node_connectivity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;edge_node_connectivity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Used for compatibility with pyugrid.</span>
     <span class="n">rename</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;node_coordinates&#39;</span><span class="p">:</span> <span class="s1">&#39;nodes&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;face_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;faces&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;boundary_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;boundaries&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;edge_node_connectivity&#39;</span><span class="p">:</span> <span class="s1">&#39;edges&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;node_coordinates&quot;</span><span class="p">:</span> <span class="s2">&quot;nodes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_node_connectivity&quot;</span><span class="p">:</span> <span class="s2">&quot;faces&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;boundary_node_connectivity&quot;</span><span class="p">:</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;edge_node_connectivity&quot;</span><span class="p">:</span> <span class="s2">&quot;edges&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">grid</span> <span class="o">=</span> <span class="p">{}</span>
@@ -256,8 +256,10 @@
                 <span class="k">elif</span> <span class="n">_valid_y</span><span class="p">(</span><span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">]):</span>
                     <span class="n">y</span> <span class="o">=</span> <span class="n">nc</span><span class="p">[</span><span class="n">name</span><span class="p">][:]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not recognize axis for </span><span class="si">{nc[name]}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">}})</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;Could not recognize axis for </span><span class="si">{nc[name]}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}})</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valid_connectivity</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">connectivity</span> <span class="o">=</span> <span class="n">nc</span><span class="p">[</span><span class="n">mesh_var</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
             <span class="n">num_ind</span> <span class="o">=</span> <span class="n">valid_connectivity</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -277,7 +279,7 @@
       &copy;2017, Filipe Fernandes.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
