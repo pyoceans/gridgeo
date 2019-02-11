@@ -11,37 +11,41 @@ matrix:
   fast_finish: true
   include:
     - name: "default"
-      env: TEST_TARGET=default PY=3.7
+      env: PY=3.7
     - name: "coding_standards"
-      env: TEST_TARGET=coding_standards PY=3.7
+      env: PY=3.7
     - name: "docs"
-      env: TEST_TARGET=docs PY=3.7
+      env: PY=3.7
 
 before_install:
   - wget http://bit.ly/miniconda -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-  - conda update conda
+  - conda update --quiet conda
   - conda config --add channels conda-forge --force
-  - conda create -n TEST python=$PY --file requirements.txt --file requirements-dev.txt
+  - conda config --remove channels defaults
+  - conda create --name TEST python=$PY --file requirements.txt --file requirements-dev.txt
   - source activate TEST
+  # Useful for debugging any issues with conda
+  - conda info --all
+
 
 install:
-  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install gridgeo-${version}.tar.gz && popd
+  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install --no-deps --force-reinstall gridgeo-${version}.tar.gz && popd
 
 script:
-  - if [[ $TEST_TARGET == 'default' ]]; then
+  - if [[ $TRAVIS_JOB_NAME == 'default' ]]; then
       cp -r tests /tmp && cd /tmp ;
-      pytest -s -rxs -v tests ;
+      pytest -n 2 -rxs -vv tests ;
     fi
 
-  - if [[ $TEST_TARGET == 'coding_standards' ]]; then
-      flake8 --max-line-length=105 --exclude=_version.py gridgeo ;
-      flake8 --max-line-length=105 tests ;
+  - if [[ $TRAVIS_JOB_NAME == 'coding_standards' ]]; then
+      pytest --flake8 -m flake8 ;
     fi
 
-  - if [[ $TEST_TARGET == 'docs' ]]; then
+
+  - if [[ $TRAVIS_JOB_NAME == 'docs' ]]; then
       set -e ;
       cp notebooks/gridgeo_tour.ipynb docs/source/ ;
       pushd docs ;
@@ -67,4 +71,4 @@ deploy:
     repo: pyoceans/gridgeo
     tags: true
     all_branches: master
-    condition: '$TEST_TARGET == "default"'
+    condition: '$TRAVIS_JOB_NAME == "default"'

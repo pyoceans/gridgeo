@@ -4,13 +4,12 @@ import os
 from copy import copy
 from itertools import zip_longest
 
-from gridgeo.cfvariable import CFVariable
-from gridgeo.ugrid import ugrid
-
 import netCDF4
-
 from shapely.geometry import MultiPolygon
 from shapely.ops import unary_union
+
+from gridgeo.cfvariable import CFVariable
+from gridgeo.ugrid import ugrid
 
 try:
     from matplotlib import tri
@@ -34,6 +33,7 @@ class GridGeo(object):
     file/URL) and parse the grid information.
 
     """
+
     def __init__(self, nc, **kwargs):
         """
         Return a GridGeo class.
@@ -56,11 +56,11 @@ class GridGeo(object):
         self._outline = None
         self._geometry = None
 
-        if self.mesh == 'ugrid' and tri:
+        if self.mesh == "ugrid" and tri:
             grid = ugrid(nc)
-            node_x = grid['nodes']['x']
-            node_y = grid['nodes']['y']
-            faces = grid['faces']
+            node_x = grid["nodes"]["x"]
+            node_y = grid["nodes"]["y"]
+            faces = grid["faces"]
             self.triang = tri.Triangulation(node_x, node_y, triangles=faces)
 
     @property
@@ -70,10 +70,10 @@ class GridGeo(object):
         return self._geometry
 
     def __str__(self):
-        return f'{self.mesh}'
+        return f"{self.mesh}"
 
     def __repr__(self):
-        return f'<GridGeo: {self.mesh}>'
+        return f"<GridGeo: {self.mesh}>"
 
     @property
     def outline(self):
@@ -94,71 +94,75 @@ class GridGeo(object):
         https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
 
         """
-        title = kw.pop('title', self.mesh)
-        description = kw.pop('description', '')
-        marker_size = kw.pop('marker-size', 'medium')
-        marker_symbol = kw.pop('marker-symbol', '')
-        marker_color = kw.pop('marker-color', '7e7e7e')
-        stroke = kw.pop('stroke', '555555')
-        stroke_opacity = kw.pop('stroke-opacity', 1)
-        stroke_width = kw.pop('stroke-width', 2)
-        fill = kw.pop('fill', '555555')
-        fill_opacity = kw.pop('fill-opacity', 0.6)
-        float_precision = kw.pop('float_precision', 6)
+        title = kw.pop("title", self.mesh)
+        description = kw.pop("description", "")
+        marker_size = kw.pop("marker-size", "medium")
+        marker_symbol = kw.pop("marker-symbol", "")
+        marker_color = kw.pop("marker-color", "7e7e7e")
+        stroke = kw.pop("stroke", "555555")
+        stroke_opacity = kw.pop("stroke-opacity", 1)
+        stroke_width = kw.pop("stroke-width", 2)
+        fill = kw.pop("fill", "555555")
+        fill_opacity = kw.pop("fill-opacity", 0.6)
+        float_precision = kw.pop("float_precision", 6)
         geometry = copy(self.geometry.__geo_interface__)
-        geometry['coordinates'] = set_precision(geometry['coordinates'], float_precision)
+        geometry["coordinates"] = set_precision(
+            geometry["coordinates"], float_precision
+        )
 
-        geojson = {'type': 'Feature',
-                   'properties': {
-                       'title': title,
-                       'description': description,
-                       'marker-size': marker_size,
-                       'marker-symbol': marker_symbol,
-                       'marker-color': marker_color,
-                       'stroke': stroke,
-                       'stroke-opacity': stroke_opacity,
-                       'stroke-width': stroke_width,
-                       'fill': fill,
-                       'fill-opacity': fill_opacity,
-                       },
-                   'geometry': geometry}
+        geojson = {
+            "type": "Feature",
+            "properties": {
+                "title": title,
+                "description": description,
+                "marker-size": marker_size,
+                "marker-symbol": marker_symbol,
+                "marker-color": marker_color,
+                "stroke": stroke,
+                "stroke-opacity": stroke_opacity,
+                "stroke-width": stroke_width,
+                "fill": fill,
+                "fill-opacity": fill_opacity,
+            },
+            "geometry": geometry,
+        }
         return geojson
 
     def save(self, filename, fmt=None, **kw):
-        formats = ['shp', 'geojson']
+        formats = ["shp", "geojson"]
         extension = os.path.splitext(filename)[1]
 
         if not fmt:
-            fmt = extension.lstrip('.')
+            fmt = extension.lstrip(".")
 
         if fmt not in formats:
-            raise ValueError(f'Expected shp or geojson, got {fmt}')
+            raise ValueError(f"Expected shp or geojson, got {fmt}")
 
-        if extension.lstrip('.') != fmt:
-            filename = '.'.join([filename, fmt])
+        if extension.lstrip(".") != fmt:
+            filename = ".".join([filename, fmt])
 
-        if fmt == 'geojson':
+        if fmt == "geojson":
             import json
+
             geojson = self.to_geojson(**kw)
-            kw = {
-                'sort_keys': True,
-                'indent': 4,
-                'separators': (',', ': ')
-            }
-            with open(filename, 'w') as f:
+            kw = {"sort_keys": True, "indent": 4, "separators": (",", ": ")}
+            with open(filename, "w") as f:
                 json.dump(geojson, f, **kw)
 
-        if fmt == 'shp':
+        if fmt == "shp":
             import fiona
-            name = kw.pop('name', self.mesh)
+
+            name = kw.pop("name", self.mesh)
 
             schema = {
-                'geometry': 'MultiPolygon',
-                'properties': {'name': f'str:{len(name)}'}
+                "geometry": "MultiPolygon",
+                "properties": {"name": f"str:{len(name)}"},
             }
 
-            with fiona.open(filename, 'w', 'ESRI Shapefile', schema) as f:
-                f.write({
-                    'geometry': self.__geo_interface__,
-                    'properties': {'name': name},
-                })
+            with fiona.open(filename, "w", "ESRI Shapefile", schema) as f:
+                f.write(
+                    {
+                        "geometry": self.__geo_interface__,
+                        "properties": {"name": name},
+                    }
+                )
