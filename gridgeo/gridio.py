@@ -1,4 +1,3 @@
-
 from docopt import docopt
 
 from gridgeo import GridGeo
@@ -30,9 +29,9 @@ def parse_args():
 
 
 def cli(args):
-    url = args.get('URL')
-    standard_name = args.get('VAR')
-    filename = args.get('--output')
+    url = args.get("URL")
+    standard_name = args.get("VAR")
+    filename = args.get("--output")
 
     grid = GridGeo(url, standard_name=standard_name)
     grid.save(filename, float_precision=4)
@@ -43,5 +42,5 @@ def main():
     cli(args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

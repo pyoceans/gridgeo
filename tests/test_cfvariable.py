@@ -1,21 +1,18 @@
 from itertools import zip_longest
 
-from gridgeo.cfvariable import _filled_masked, _make_grid
-
-from hypothesis.extra.numpy import array_shapes
-
 import numpy as np
-
 import pytest
-
+from hypothesis.extra.numpy import array_shapes
 from shapely.geometry import MultiPolygon
+
+from gridgeo.cfvariable import _filled_masked, _make_grid
 
 
 @pytest.fixture
 def coords():
     x = y = np.array([1, 2, 3, 4], np.int)
     x, y = np.meshgrid(x, y)
-    yield np.concatenate([x[..., None], y[..., None, ]], axis=2)
+    yield np.concatenate([x[..., None], y[..., None]], axis=2)
 
 
 def test__make_grid_raises():
@@ -30,8 +27,12 @@ def test__make_grid_raises():
 def test__valid_coords(coords):
     polygons = _make_grid(coords)
     assert len(polygons) == 9
-    assert (polygons[0] == np.array([[1, 1], [2, 1], [2, 2], [1, 2]], np.int)).all()
-    assert (polygons[-1] == np.array([[3, 3], [4, 3], [4, 4], [3, 4]], np.int)).all()
+    assert (
+        polygons[0] == np.array([[1, 1], [2, 1], [2, 2], [1, 2]], np.int)
+    ).all()
+    assert (
+        polygons[-1] == np.array([[3, 3], [4, 3], [4, 4], [3, 4]], np.int)
+    ).all()
 
 
 def test__valid_geometry(coords):
