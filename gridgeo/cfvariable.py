@@ -52,12 +52,13 @@ class CFVariable(object):
         self._coords = self._variable.coordinates.split()
 
     def _filter_coords(self, variables):
+        valid_coords = []
         for var in variables:
             if var.name in self._coords:
-                return var
-        raise ValueError(
-            f"Could not find a match between {self.coordinates} and {variables}"
-        )
+                valid_coords.append(var)
+        if len(valid_coords) != 1:
+            raise ValueError(f"Expected a single coord, got '{valid_coords}'.")
+        return valid_coords[0]
 
     def axis(self, name):
         return getattr(self, "{}_axis".format(name.lower()))()
@@ -66,14 +67,20 @@ class CFVariable(object):
         tvars = list(
             set(
                 self._nc.get_variables_by_attributes(
-                    axis=lambda x: x and x.lower() == "t"
+                    axis=lambda x: x and str(x).lower() == "t"
                 )
                 + self._nc.get_variables_by_attributes(
-                    standard_name=lambda x: x
-                    in ["time", "forecast_reference_time"]
+                    standard_name=lambda x: str(x)
+                    in [
+                        "time"
+                    ]  # We don't want coords `forecast_reference_time`.
+                )
+                + self._nc.get_variables_by_attributes(
+                    _CoordinateAxisType=lambda x: str(x).lower() == "time"
                 )
             )
         )
+        # _CoordinateAxisType: Time
         return self._filter_coords(tvars)
 
     def crs(self):
