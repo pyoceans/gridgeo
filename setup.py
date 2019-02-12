@@ -1,16 +1,14 @@
-from __future__ import absolute_import, division, print_function
-
-import os
+from pathlib import Path
 
 from setuptools import setup
 
 import versioneer
 
-rootpath = os.path.abspath(os.path.dirname(__file__))
+rootpath = Path(__file__).parent.absolute()
 
 
 def read(*parts):
-    return open(os.path.join(rootpath, *parts), "r").read()
+    return open(rootpath.joinpath(*parts), "r").read()
 
 
 long_description = "{}\n{}".format(read("README.rst"), read("CHANGES.txt"))
