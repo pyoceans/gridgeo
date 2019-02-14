@@ -36,8 +36,8 @@ install:
 
 script:
   - if [[ $TRAVIS_JOB_NAME == 'default' ]]; then
-      cp -r tests /tmp && cd /tmp ;
-      pytest -n 2 -rxs -vv tests ;
+      cp -r tests /tmp && pushd /tmp ;
+      pytest -n 2 -rxs -vv tests && popd ;
     fi
 
   - if [[ $TRAVIS_JOB_NAME == 'coding_standards' ]]; then
