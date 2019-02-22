@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 import versioneer
 
@@ -11,9 +11,6 @@ def read(*parts):
     return open(rootpath.joinpath(*parts), "r").read()
 
 
-long_description = "{}\n{}".format(read("README.rst"), read("CHANGES.txt"))
-LICENSE = read("LICENSE.txt")
-
 with open("requirements.txt") as f:
     require = f.readlines()
 install_requires = [r.strip() for r in require]
@@ -21,28 +18,28 @@ install_requires = [r.strip() for r in require]
 setup(
     name="gridgeo",
     version=versioneer.get_version(),
-    license=LICENSE,
-    long_description=long_description,
+    description="Convert UGRID, SGRID, and non-compliant ocean model grids to geo-like objects",  # noqa
+    license="BSD-3-Clause",
+    long_description=f'{read("README.md")}',
+    long_description_content_type="text/markdown",
+    author="Filipe Fernandes",
+    author_email="ocefpaf@gmail.com",
+    url="https://github.com/pyoceans/gridgeo",
+    keywords=["geojson", "shapefile", "ocean models", "ugrid", "sgrid"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "License :: OSI Approved :: BSD License",
         "Environment :: Console",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.6",
         "Topic :: Scientific/Engineering",
     ],
-    description=(
-        "Convert UGRID, SGRID, and some non-compliant ocean model grids to geo-like objects"
-    ),  # noqa
-    url="https://github.com/pyoceans/gridgeo",
     platforms="any",
-    keywords=["geojson", "shapefile", "ocean models", "ugrid", "sgrid"],
+    packages=find_packages(),
+    extras_require={"testing": ["pytest"]},
     install_requires=install_requires,
-    packages=["gridgeo"],
-    tests_require=["pytest"],
     cmdclass=versioneer.get_cmdclass(),
-    author=["Filipe Fernandes"],
-    author_email="ocefpaf@gmail.com",
     entry_points={"console_scripts": ["gridio = gridgeo.gridio:main"]},
 )
