@@ -17,6 +17,7 @@ install_requires = [r.strip() for r in require]
 
 setup(
     name="gridgeo",
+    python_requires='>=3.6',
     version=versioneer.get_version(),
     description="Convert UGRID, SGRID, and non-compliant ocean model grids to geo-like objects",  # noqa
     license="BSD-3-Clause",
