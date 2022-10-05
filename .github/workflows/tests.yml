@@ -3,7 +3,7 @@ name: Tests
 on:
   pull_request:
   push:
-    branches: [hacktoberfest2022-test_github_actions]
+    branches: [main]
 
 jobs:
   run:
