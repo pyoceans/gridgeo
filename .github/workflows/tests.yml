@@ -25,17 +25,10 @@ jobs:
     - name: Python ${{ matrix.python-version }}
       shell: bash -l {0}
       run: |
-        micromamba create --yes --name TEST python=${{ matrix.python-version }} pip python-build --file requirements.txt --file requirements-dev.txt --channel conda-forge
+        micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
         micromamba activate TEST
         pip install -e . --no-deps --force-reinstall
-    - name: Tarball tests
-      shell: bash -l {0}
-      run: |
-        micromamba activate TEST
-        python setup.py --version
-        python -m build --sdist --wheel . --outdir dist
-        check-manifest --verbose
-        twine check dist/*
+
     - name: Tests
       shell: bash -l {0}
       run: |
