@@ -7,23 +7,22 @@ on:
 
 jobs:
   run:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.7"]
-      fail-fast: false
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        pre-build-command: "set -e; cp notebooks/gridgeo_tour.ipynb docs/source/; pushd docs; make clean html linkcheck"
+        build-command: "sphinx-build -b html . docs/build/html"
+        docs-folder: "docs/"
 
-    - name: Documentation
-      shell: bash -l {0}
-      run: |
-        set -e ;
-        cp notebooks/gridgeo_tour.ipynb docs/source/ ;
-        pushd docs ;
-        make clean html linkcheck ;
-        popd ;
-        python -m doctr deploy --sync .;
-        python -m doctr deploy --sync --no-require-master --built-docs docs/build/html "docs-main" ;
+    # - name: Documentation
+    #   shell: bash -l {0}
+    #   run: |
+    #     set -e ;
+    #     cp notebooks/gridgeo_tour.ipynb docs/source/ ;
+    #     pushd docs ;
+    #     make clean html linkcheck ;
+    #     popd ;
+    #     python -m doctr deploy --sync .;
+    #     python -m doctr deploy --sync --no-require-master --built-docs docs/build/html "docs-main" ;
