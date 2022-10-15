@@ -27,6 +27,7 @@ jobs:
     - name: Building documentation with sphinx
       shell: bash -l {0}
       run: |
+        micromamba activate TEST
         set -e
         cp notebooks/gridgeo_tour.ipynb docs/source
         pushd docs
