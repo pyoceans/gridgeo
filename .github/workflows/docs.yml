@@ -27,6 +27,7 @@ jobs:
         micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
         micromamba activate TEST
         pip install -e . --no-deps --force-reinstall
+        apt-get install python3-sphinx
 
     # steps:
     # - uses: actions/checkout@v3
@@ -48,15 +49,16 @@ jobs:
     #       version=$(python setup.py --version)
     #       pip install --no-deps --force-reinstall gridgeo-${version}.tar.gz
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+    # - name: Setup tmate session
+    #   uses: mxschmitt/action-tmate@v3
 
-    # - name: Building sphinx
-    #   shell: bash -l {0}
-    #   run: |
-    #       micromamba activate TEST
-    #       cp notebooks/gridgeo_tour.ipynb docs/source/
-    #       cd docs/source
+    - name: Building sphinx
+      shell: bash -l {0}
+      run: |
+          micromamba activate TEST
+          cp notebooks/gridgeo_tour.ipynb docs/source/
+          cd docs
+          make clean html linkcheck
     #       "sphinx-build -b html ../build/html"
 
     # - name: Build sphinx documentation
