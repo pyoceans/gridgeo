@@ -3,7 +3,7 @@ name: Documentation
 on:
   pull_request:
   push:
-    branches: [hacktoberfest2022-documentation_github_actions]
+    branches: [main]
 
 jobs:
   run:
