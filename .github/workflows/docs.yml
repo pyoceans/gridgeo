@@ -7,63 +7,31 @@ on:
 
 jobs:
   run:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest] #, windows-latest, macos-latest
-        python-version: ["3.7"] #, "3.8", "3.9", "3.10"
-      fail-fast: false
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.1.0
 
     - name: Setup Micromamba
       uses: mamba-org/provision-with-micromamba@v13
       with:
         environment-file: false
 
-    - name: Python ${{ matrix.python-version }}
+    - name: Setting environment configuration
       shell: bash -l {0}
       run: |
-        micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
+        micromamba create --yes --name TEST python=3.7 --file requirements.txt --file requirements-dev.txt --channel conda-forge
         micromamba activate TEST
         pip install -e . --no-deps --force-reinstall
-        apt-get install python3-sphinx
 
-    # steps:
-    # - uses: actions/checkout@v3
-    # - name: Install dependencies
-    #   run: |
-    #       wget http://bit.ly/miniconda -O miniconda.sh
-    #       bash miniconda.sh -b -p $HOME/miniconda
-    #       export PATH="$HOME/miniconda/bin:$PATH"
-    #       conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-    #       conda update --quiet conda
-    #       conda config --add channels conda-forge --force
-    #       conda config --remove channels defaults
-    #       conda create --name TEST python=3.7 --file requirements.txt --file requirements-dev.txt
-    #       source activate TEST
-
-    # - name: Installing gridgeo and its dependencies
-    #   run: |
-    #       python setup.py sdist
-    #       version=$(python setup.py --version)
-    #       pip install --no-deps --force-reinstall gridgeo-${version}.tar.gz
-
-    # - name: Setup tmate session
-    #   uses: mxschmitt/action-tmate@v3
-
-    - name: Building sphinx
+    - name: Building documentation with sphinx
       shell: bash -l {0}
       run: |
-          micromamba activate TEST
-          cp notebooks/gridgeo_tour.ipynb docs/source/
-          cd docs
-          make clean html linkcheck
-    #       "sphinx-build -b html ../build/html"
+        set -e
+        cp notebooks/gridgeo_tour.ipynb docs/source
+        pushd docs
+        make clean html linkcheck
+        popd
 
-    # - name: Build sphinx documentation
-    # - uses: ammaraskar/sphinx-action@master
-    #   with:
-    #     pre-build-command: "cp notebooks/gridgeo_tour.ipynb docs/source/; cd docs/source"
-    #     build-command: "sphinx-build -b html . ../build/html"
-    #     docs-folder: "docs/"
+    # - name: Deploy docs to gh-pages
+      
