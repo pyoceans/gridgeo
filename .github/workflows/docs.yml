@@ -49,6 +49,7 @@ jobs:
     #       pip install --no-deps --force-reinstall gridgeo-${version}.tar.gz
 
     - name: Building sphinx
+      shell: bash -l {0}
       run: |
           micromamba activate TEST
           cp notebooks/gridgeo_tour.ipynb docs/source/
