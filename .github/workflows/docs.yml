@@ -35,7 +35,7 @@ jobs:
         popd
 
     - name: Deploy docs to gh-pages
-      uses: peaceiris/actions-gh-pages@v3.8.0
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.TOKEN_GHA }}
         publish_dir: docs/build/html
