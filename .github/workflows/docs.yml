@@ -1,0 +1,44 @@
+name: Documentation
+
+on:
+  pull_request:
+
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Micromamba
+      uses: mamba-org/provision-with-micromamba@v13
+      with:
+        environment-file: false
+
+    - name: Setting environment configuration
+      shell: bash -l {0}
+      run: |
+        micromamba create --yes --name TEST python=3 --file requirements.txt --file requirements-dev.txt --channel conda-forge
+        micromamba activate TEST
+        pip install -e . --no-deps --force-reinstall
+
+    - name: Building documentation with sphinx
+      shell: bash -l {0}
+      run: |
+        micromamba activate TEST
+        set -e
+        cp notebooks/gridgeo_tour.ipynb docs/source
+        pushd docs
+        make clean html linkcheck
+        popd
+
+    - name: Deploy docs to gh-pages
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html
