@@ -2,8 +2,10 @@ name: Documentation
 
 on:
   pull_request:
+
   push:
-    branches: [main]
+    tags:
+      - "v*"
 
 jobs:
   run:
@@ -20,7 +22,7 @@ jobs:
     - name: Setting environment configuration
       shell: bash -l {0}
       run: |
-        micromamba create --yes --name TEST python=3.7 --file requirements.txt --file requirements-dev.txt --channel conda-forge
+        micromamba create --yes --name TEST python=3 --file requirements.txt --file requirements-dev.txt --channel conda-forge
         micromamba activate TEST
         pip install -e . --no-deps --force-reinstall
 
@@ -35,6 +37,7 @@ jobs:
         popd
 
     - name: Deploy docs to gh-pages
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
