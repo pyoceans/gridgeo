@@ -2,10 +2,7 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-import versioneer
-
 rootpath = Path(__file__).parent.absolute()
-
 
 def read(*parts):
     return open(rootpath.joinpath(*parts), "r").read()
@@ -18,7 +15,6 @@ install_requires = [r.strip() for r in require]
 setup(
     name="gridgeo",
     python_requires='>=3.6',
-    version=versioneer.get_version(),
     description="Convert UGRID, SGRID, and non-compliant ocean model grids to geo-like objects",  # noqa
     license="BSD-3-Clause",
     long_description=f'{read("README.md")}',
@@ -41,6 +37,11 @@ setup(
     packages=find_packages(),
     extras_require={"testing": ["pytest"]},
     install_requires=install_requires,
-    cmdclass=versioneer.get_cmdclass(),
     entry_points={"console_scripts": ["gridio = gridgeo.gridio:main"]},
+    use_scm_version={
+        "write_to": "gridgeo/_version.py",
+        "write_to_template": '__version__ = "{version}"',
+        "tag_regex": r"^(?P<prefix>v)?(?P<version>[^\+]+)(?P<suffix>.*)?$",
+    },
+    setup_requires=['setuptools_scm'],
 )

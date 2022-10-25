@@ -1,5 +1,4 @@
 include README.rst
 include *.txt
 recursive-include gridgeo *.py
-include versioneer.py
 include gridgeo/_version.py
