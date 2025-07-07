@@ -19,7 +19,7 @@ license = {text = "BSD-3-Clause"}
 dependencies = [
   "docopt",
   "netCDF4",
-  "shapely",
+  "shapely>=2",
   "numpy>=2",
 ]
 
