@@ -1,3 +1,5 @@
+"""GridGeo."""
+
 from gridgeo.gridgeo import GridGeo
 
 __all__ = ["GridGeo"]

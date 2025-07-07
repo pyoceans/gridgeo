@@ -8,6 +8,7 @@ lint.ignore = [
     "D205",  # 1 blank line required between summary line and description
     "D213",  # incompatible. Ignoring `multi-line-summary-second-line`
     "TRY003",  # Avoid specifying long messages outside the exception class
+    "ANN",  # Skip annotations
 ]
 
 [lint.extend-per-file-ignores]
@@ -18,6 +19,22 @@ lint.ignore = [
   "ERA001",  # Found commented-out code
   "ERA001",  # Found commented-out code
   "EXE001",  # Shebang is present but file is not executable
+]
+"gridgeo/cfvariable.py" = [
+  "D102",  # Missing docstring in public method
+  "D105",  # Missing docstring in magic method
+  "D107",  # Missing docstring
+  "N802",  # Function name should be lowercase
+  "SLF001",  # Private member accessed
+]
+"gridgeo/dask_netcdf.py" = [
+  "D100", # Missing docstring in public module
+  "D101",  # Missing docstring in public class
+  "D102",  # Missing docstring in public method
+  "D105",  # Missing docstring in magic method
+  "D107",  # Missing docstring
+  "N802",  # Function name should be lowercase
+  "SLF001",  # Private member accessed
 ]
 "test_*.py" = [
     "ANN001",  # Missing type annotation for function argument

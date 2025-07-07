@@ -18,13 +18,13 @@ def coords():
 
 @given(array_shapes(min_dims=1, max_dims=2))
 def test__make_grid_raises_1_2(shape):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="dimension array, got"):
         _make_grid(np.empty(shape))
 
 
 @given(array_shapes(min_dims=4, max_dims=10))
 def test__make_grid_raises_4_10(shape):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="dimension array, got"):
         _make_grid(np.empty(shape))
 
 

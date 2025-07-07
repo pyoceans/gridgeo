@@ -8,7 +8,7 @@ dask.set_options(get=get_sync)
 class DaskNetCDF:
     def __init__(self, variable, array=None, chunks=None):
         self._variable = variable
-        self.chunks = -1 if not chunks else chunks
+        self.chunks = chunks or -1
         if array is None:
             self.array = da.from_array(variable, chunks=chunks)
         else:
@@ -20,8 +20,10 @@ class DaskNetCDF:
         for line in lines[1:]:
             if "current shape" in line:
                 left = line.split("=")[0]
-                line = "= ".join([left, str(self.array.shape)])
-            new_lines.append(line)
+                _line = "= ".join([left, str(self.array.shape)])
+            else:
+                _line = line
+            new_lines.append(_line)
 
         return "\n".join(new_lines)
 

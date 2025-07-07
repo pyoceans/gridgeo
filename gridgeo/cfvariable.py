@@ -1,12 +1,16 @@
+"""CFVariable."""
+
 import numpy as np
 
 from gridgeo.ugrid import ugrid
 
 
 def _make_grid(coords):
-    if coords.ndim != 3:
-        raise ValueError(f"Expected 3 dimension array, got {coords.ndim}.")
-    M, N, L = coords.shape
+    ndim = 3
+    if coords.ndim != ndim:
+        msg = f"Expected 3 dimension array, got {coords.ndim}."
+        raise ValueError(msg)
+    M, N, L = coords.shape  # noqa: N806
     polygons = np.concatenate(
         (
             coords[0:-1, 0:-1],
@@ -26,21 +30,21 @@ def _filled_masked(arr):
 
 
 class CFVariable:
+    """CFVariable."""
+
     def __init__(self, nc, **kwargs):
-        """FIXME: this should be done when slicing a CFVariable in pocean-core.
-        This class is only a temporary workaround until something better is created.
+        """NB: This should be done when slicing a CFVariable in pocean-core.
+        This class is only a temporary workaround until something better.
 
         """
         self._nc = nc
         variables = self._nc.get_variables_by_attributes(**kwargs)
         if len(variables) > 1:
-            raise ValueError(
-                f"Found more than 1 variable with criteria {kwargs}",
-            )
+            msg = f"Found more than 1 variable with criteria {kwargs}"
+            raise ValueError(msg)
         if not variables:
-            raise ValueError(
-                f"Could not find any variables with criteria {kwargs}",
-            )
+            msg = f"Could not find any variables with criteria {kwargs}"
+            raise ValueError(msg)
         self._variable = variables[0]
         self._coords = self._variable.coordinates.split()
 
@@ -48,7 +52,8 @@ class CFVariable:
         valid_coords = [var for var in variables if var.name in self._coords]
 
         if len(valid_coords) != 1:
-            raise ValueError(f"Expected a single coord, got '{valid_coords}'.")
+            msg = f"Expected a single coord, got '{valid_coords}'."
+            raise ValueError(msg)
         return valid_coords[0]
 
     def axis(self, name):
@@ -68,7 +73,7 @@ class CFVariable:
                 ),
             ),
         )
-        # _CoordinateAxisType: Time
+        # For _CoordinateAxisType: Time
         return self._filter_coords(tvars)
 
     def crs(self):
@@ -165,16 +170,15 @@ class CFVariable:
         if not topologies:
             if self.x_axis().ndim == 1 == self.y_axis().ndim == 1:
                 return "unknown_1d"
-            if self.x_axis().ndim == 2 == self.y_axis().ndim == 2:
+            ndim = 2
+            if self.x_axis().ndim == ndim == self.y_axis().ndim == ndim:
                 return "unknown_2d"
-            raise ValueError(
-                f"Could not identify the topology for {self._nc}.",
-            )
+            msg = f"Could not identify the topology for {self._nc}."
+            raise ValueError(msg)
 
         if topologies and len(topologies) > 1:
-            raise ValueError(
-                f"Expected 1 topology variable, got {len(topologies)}.",
-            )
+            msg = f"Expected 1 topology variable, got {len(topologies)}."
+            raise ValueError(msg)
 
         mesh = topologies[0]
         dims = getattr(mesh, "topology_dimension", None)
@@ -182,8 +186,10 @@ class CFVariable:
 
         if cf_role == "mesh_topology" and dims in (1, 2):
             return "ugrid"
-        if cf_role == "grid_topology" and dims == 2:
+        n_topo = 2
+        if cf_role == "grid_topology" and dims == n_topo:
             return "sgrid"
+        return None
 
     def polygons(self):
         if self.topology() == "ugrid":
@@ -202,7 +208,8 @@ class CFVariable:
 
         if self.topology() == "unknown_1d":
             x, y = self.x_axis()[:], self.y_axis()[:]
-            # Some non-compliant grids, like NYHOPS, may have missing_value/fill_value.
+            # Some non-compliant grids, like NYHOPS,
+            # may have missing_value/fill_value.
             x = _filled_masked(x)
             y = _filled_masked(y)
             if hasattr(y, "filled"):
@@ -213,11 +220,13 @@ class CFVariable:
 
         if self.topology() == "unknown_2d":
             x, y = self.x_axis()[:], self.y_axis()[:]
-            # Some non-compliant grids, like NYHOPS, may have missing_value/fill_value.
+            # Some non-compliant grids, like NYHOPS,
+            # may have missing_value/fill_value.
             x = _filled_masked(x)
             y = _filled_masked(y)
             coords = np.concatenate([x[..., None], y[..., None]], axis=2)
             return _make_grid(coords)
+        return None
 
     # Replication of the `netCDF4.Variable` object via composition.
     def __getitem__(self, key):

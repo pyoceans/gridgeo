@@ -1,6 +1,8 @@
-import os
+"""GridGeo: make geo-representation of ocean models grids."""
+
 from copy import copy
 from itertools import zip_longest
+from pathlib import Path
 
 import netCDF4
 from shapely.geometry import MultiPolygon
@@ -16,12 +18,13 @@ except ImportError:
 
 
 def set_precision(coords, precision):
+    """Set precision for the coords."""
     result = []
     try:
         return round(coords, int(precision))
     except TypeError:
         for coord in coords:
-            result.append(set_precision(coord, precision))
+            result.append(set_precision(coord, precision))  # noqa: PERF401
     return result
 
 
@@ -33,6 +36,7 @@ class GridGeo:
 
     def __init__(self, nc, **kwargs):
         """Return a GridGeo class.
+
         nc: netCDF4-python object or a netCDF file/URL string
 
         """
@@ -60,30 +64,36 @@ class GridGeo:
 
     @property
     def geometry(self):
+        """Return grid geometry."""
         if self._geometry is None:
             self._geometry = MultiPolygon(list(zip_longest(self.polygons, [])))
         return self._geometry
 
     def __str__(self):
+        """Return str."""
         return str(self.mesh)
 
     def __repr__(self):
+        """Return repr."""
         return f"<GridGeo: {self.mesh}>"
 
     @property
     def outline(self):
+        """Return grid outline."""
         if self._outline is None:
             self._outline = unary_union(self.geometry)
         return self._outline
 
     @property
     def __geo_interface__(self):
+        """Return __geo_interface__."""
         if self._geo_interface is None:
             self._geo_interface = self.geometry.__geo_interface__
         return self._geo_interface
 
     def to_geojson(self, **kw):
         """Return a GeoJSON representation of an grid object.
+
         The `kw` are based on the simplestyle-spec:
         https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
 
@@ -105,7 +115,7 @@ class GridGeo:
             float_precision,
         )
 
-        geojson = {
+        return {
             "type": "Feature",
             "properties": {
                 "title": title,
@@ -121,31 +131,33 @@ class GridGeo:
             },
             "geometry": geometry,
         }
-        return geojson
 
     def save(self, filename, fmt=None, **kw):
+        """Save to file."""
+        filename = Path(filename)
         formats = ["shp", "geojson"]
-        extension = os.path.splitext(filename)[1]
+        extension = filename.suffix
 
         if not fmt:
             fmt = extension.lstrip(".")
 
         if fmt not in formats:
-            raise ValueError(f"Expected shp or geojson, got {fmt}")
+            msg = f"Expected shp or geojson, got {fmt}."
+            raise ValueError(msg)
 
         if extension.lstrip(".") != fmt:
-            filename = ".".join([filename, fmt])
+            filename = f"{filename}.{fmt}"
 
         if fmt == "geojson":
-            import json
+            import json  # noqa: PLC0415
 
             geojson = self.to_geojson(**kw)
             kw = {"sort_keys": True, "indent": 4, "separators": (",", ": ")}
-            with open(filename, "w") as f:
+            with Path.open(filename, "w") as f:
                 json.dump(geojson, f, **kw)
 
         if fmt == "shp":
-            import fiona
+            import fiona  # noqa: PLC0415
 
             name = kw.pop("name", self.mesh)
 

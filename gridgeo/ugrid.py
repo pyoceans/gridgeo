@@ -1,4 +1,4 @@
-"""Lightweight UGRID-1.0 parser"""
+"""Lightweight UGRID-1.0 parser."""
 
 import netCDF4
 import numpy as np
@@ -20,9 +20,7 @@ def _valid_x(var):
     if getattr(var, "axis", "None").lower() == "x":
         return True
     # Units are mandatory, fail if not present.
-    if var.units in units:
-        return True
-    return False
+    return var.units in units
 
 
 def _valid_y(var):
@@ -42,43 +40,40 @@ def _valid_y(var):
     if getattr(var, "axis", "None").lower() == "y":
         return True
     # Units are mandatory, fail if not present.
-    if var.units in units:
-        return True
-    return False
+    return var.units in units
 
 
 def _mandatory_attr(var, attribute):
     if not hasattr(var, attribute):
-        raise ValueError(
-            f"Could not find required attribute {attribute} in {var}.",
-        )
+        msg = f"Could not find required attribute {attribute} in {var}."
+        raise ValueError(msg)
 
 
 def get_mesh_var(nc):
-    """Returns the mesh_topology variable for `nc` (netCDF4.Dataset object)."""
+    """Return the mesh_topology variable for `nc` (netCDF4.Dataset object)."""
     mesh_var = nc.get_variables_by_attributes(cf_role="mesh_topology")
     if not mesh_var:
-        raise ValueError(
-            f"Could not find mesh_topology variable in the dataset {nc}",
-        )
+        msg = f"Could not find mesh_topology variable in the dataset {nc}"
+        raise ValueError(msg)
     if len(mesh_var) > 1:
-        raise ValueError(
-            f"Expected 1 mesh_topology variable, found {len(mesh_var)}.",
-        )
+        msg = f"Expected 1 mesh_topology variable, found {len(mesh_var)}."
+        raise ValueError(msg)
 
     mesh_var = mesh_var[0]
     _mandatory_attr(mesh_var, attribute="node_coordinates")
     _mandatory_attr(mesh_var, attribute="topology_dimension")
 
     if mesh_var.topology_dimension not in (1, 2):
-        raise ValueError(
-            f"Expected mesh dimension to be 1 or 2, got {mesh_var.topology_dimension}.",
+        msg = (
+            "Expected mesh dimension to be 1 or 2, got "
+            "{mesh_var.topology_dimension}."
         )
+        raise ValueError(msg)
     return mesh_var
 
 
 def connectivity_array(connectivity, num_ind):
-    """Returns the connectivity array for its correspdonding `netCDF4.Variable`
+    """Return the connectivity array for its correspdonding `netCDF4.Variable`
     according to UGRID-1.0.
 
     """
@@ -92,7 +87,7 @@ def connectivity_array(connectivity, num_ind):
     if start_index >= 1:
         array -= start_index
 
-    # FIXME: This won't work for more than one flag value.
+    # NB: This won't work for more than one flag value.
     flag_values = getattr(connectivity, "flag_values", None)
     if flag_values:
         array[array == flag_values - start_index] = flag_values
@@ -134,7 +129,7 @@ def ugrid(nc):
     }
 
     grid = {}
-    for key, value in mesh_var.__dict__.items():
+    for key in mesh_var.__dict__:
         if key in valid_coords:
             coord_names = mesh_var.getncattr(key).strip().split()
             for name in coord_names:
@@ -143,9 +138,8 @@ def ugrid(nc):
                 elif _valid_y(nc[name]):
                     y = nc[name][:]
                 else:
-                    raise ValueError(
-                        f"Could not recognize axis for {nc[name]}",
-                    )
+                    msg = f"Could not recognize axis for {nc[name]}"
+                    raise ValueError(msg)
             grid.update({key: {"x": x, "y": y}})
         if key in valid_connectivity:
             connectivity = nc[mesh_var.getncattr(key).strip()]
