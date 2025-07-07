@@ -29,8 +29,9 @@ def test_outline():
 
 def test_polygons():
     assert isinstance(grid.polygons, _iterables)
-    assert all((isinstance(p, _iterables) for p in grid.polygons))
-    assert all((len(p) == 4 for p in grid.polygons))
+    assert all(isinstance(p, _iterables) for p in grid.polygons)
+    n_nodes = 4
+    assert all(len(p) == n_nodes for p in grid.polygons)
 
 
 def test_geometry():
@@ -39,7 +40,7 @@ def test_geometry():
 
 def test_polygons_len():
     assert len(grid.polygons) == npoly
-    assert len(grid.geometry) == npoly
+    assert len(grid.geometry.geoms) == npoly
 
 
 def test_geo_interface():
@@ -65,5 +66,6 @@ def test_to_geojson():
     }
     coords = geojson["geometry"]["coordinates"]
     assert len(coords) == npoly
-    assert len(coords[0][0]) == 5  # squares are 4+1
+    n_nodes = 5  # squares are 4+1
+    assert len(coords[0][0]) == n_nodes
     assert str(coords[0][0][0][0]) == "-74.24"
