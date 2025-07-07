@@ -57,7 +57,6 @@ repos:
   rev: 1.9.1
   hooks:
     - id: nbqa-check-ast
-    - id: nbqa-black
     - id: nbqa-ruff
       args: [
         --fix,
