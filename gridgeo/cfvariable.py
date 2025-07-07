@@ -15,23 +15,19 @@ def _make_grid(coords):
             coords[1:, 0:-1],
         ),
         axis=L,
-    )
-
-    polygons = polygons.reshape(((M - 1) * (N - 1), 4, L))
+    ).reshape(((M - 1) * (N - 1), 4, L))
     return [p for p in polygons if not np.isnan(p).any()]
 
 
 def _filled_masked(arr):
     if hasattr(arr, "filled"):
-        return arr.filled(fill_value=np.NaN)
-    else:
-        return arr
+        return arr.filled(fill_value=np.nan)
+    return arr
 
 
-class CFVariable(object):
+class CFVariable:
     def __init__(self, nc, **kwargs):
-        """
-        FIXME: this should be done when slicing a CFVariable in pocean-core.
+        """FIXME: this should be done when slicing a CFVariable in pocean-core.
         This class is only a temporary workaround until something better is created.
 
         """
@@ -39,44 +35,38 @@ class CFVariable(object):
         variables = self._nc.get_variables_by_attributes(**kwargs)
         if len(variables) > 1:
             raise ValueError(
-                f"Found more than 1 variable with criteria {kwargs}"
+                f"Found more than 1 variable with criteria {kwargs}",
             )
-        elif not variables:
+        if not variables:
             raise ValueError(
-                f"Could not find any variables with criteria {kwargs}"
+                f"Could not find any variables with criteria {kwargs}",
             )
-        else:
-            self._variable = variables[0]
+        self._variable = variables[0]
         self._coords = self._variable.coordinates.split()
 
     def _filter_coords(self, variables):
-        valid_coords = []
-        for var in variables:
-            if var.name in self._coords:
-                valid_coords.append(var)
+        valid_coords = [var for var in variables if var.name in self._coords]
+
         if len(valid_coords) != 1:
             raise ValueError(f"Expected a single coord, got '{valid_coords}'.")
         return valid_coords[0]
 
     def axis(self, name):
-        return getattr(self, "{}_axis".format(name.lower()))()
+        return getattr(self, f"{name.lower()}_axis")()
 
     def t_axis(self):
         tvars = list(
             set(
                 self._nc.get_variables_by_attributes(
-                    axis=lambda x: x and str(x).lower() == "t"
+                    axis=lambda x: x and str(x).lower() == "t",
                 )
                 + self._nc.get_variables_by_attributes(
-                    standard_name=lambda x: str(x)
-                    in [
-                        "time"
-                    ]  # We don't want coords `forecast_reference_time`.
+                    standard_name=lambda x: str(x) == "time",
                 )
                 + self._nc.get_variables_by_attributes(
-                    _CoordinateAxisType=lambda x: str(x).lower() == "time"
-                )
-            )
+                    _CoordinateAxisType=lambda x: str(x).lower() == "time",
+                ),
+            ),
         )
         # _CoordinateAxisType: Time
         return self._filter_coords(tvars)
@@ -100,15 +90,15 @@ class CFVariable(object):
         xvars = list(
             set(
                 self._nc.get_variables_by_attributes(
-                    axis=lambda x: x and str(x).lower() == "x"
+                    axis=lambda x: x and str(x).lower() == "x",
                 )
                 + self._nc.get_variables_by_attributes(
-                    standard_name=lambda x: x and str(x).lower() in xnames
+                    standard_name=lambda x: x and str(x).lower() in xnames,
                 )
                 + self._nc.get_variables_by_attributes(
-                    units=lambda x: x and str(x).lower() in xunits
-                )
-            )
+                    units=lambda x: x and str(x).lower() in xunits,
+                ),
+            ),
         )
         return self._filter_coords(xvars)
 
@@ -125,15 +115,15 @@ class CFVariable(object):
         yvars = list(
             set(
                 self._nc.get_variables_by_attributes(
-                    axis=lambda x: x and str(x).lower() == "y"
+                    axis=lambda x: x and str(x).lower() == "y",
                 )
                 + self._nc.get_variables_by_attributes(
-                    standard_name=lambda x: x and str(x).lower() in ynames
+                    standard_name=lambda x: x and str(x).lower() in ynames,
                 )
                 + self._nc.get_variables_by_attributes(
-                    units=lambda x: x and str(x).lower() in yunits
-                )
-            )
+                    units=lambda x: x and str(x).lower() in yunits,
+                ),
+            ),
         )
         return self._filter_coords(yvars)
 
@@ -154,37 +144,36 @@ class CFVariable(object):
         zvars = list(
             set(
                 self._nc.get_variables_by_attributes(
-                    axis=lambda x: x and str(x).lower() == "z"
+                    axis=lambda x: x and str(x).lower() == "z",
                 )
                 + self._nc.get_variables_by_attributes(
-                    positive=lambda x: x and str(x).lower() in ["up", "down"]
+                    positive=lambda x: x and str(x).lower() in ("up", "down"),
                 )
                 + self._nc.get_variables_by_attributes(
-                    standard_name=lambda x: x and str(x).lower() in znames
-                )
-            )
+                    standard_name=lambda x: x and str(x).lower() in znames,
+                ),
+            ),
         )
         return self._filter_coords(zvars)
 
     def topology(self):
         vnames = ["grid_topology", "mesh_topology"]
         topologies = self._nc.get_variables_by_attributes(
-            cf_role=lambda v: v in vnames
+            cf_role=lambda v: v in vnames,
         )
 
         if not topologies:
-            if self.x_axis().ndim == 1 and self.y_axis().ndim == 1:
+            if self.x_axis().ndim == 1 == self.y_axis().ndim == 1:
                 return "unknown_1d"
-            elif self.x_axis().ndim == 2 and self.y_axis().ndim == 2:
+            if self.x_axis().ndim == 2 == self.y_axis().ndim == 2:
                 return "unknown_2d"
-            else:
-                raise ValueError(
-                    f"Could not identify the topology for {self._nc}."
-                )
+            raise ValueError(
+                f"Could not identify the topology for {self._nc}.",
+            )
 
         if topologies and len(topologies) > 1:
             raise ValueError(
-                f"Expected 1 topology variable, got {len(topologies)}."
+                f"Expected 1 topology variable, got {len(topologies)}.",
             )
 
         mesh = topologies[0]
@@ -202,7 +191,9 @@ class CFVariable(object):
             node_x = grid["nodes"]["x"]
             node_y = grid["nodes"]["y"]
             faces = grid["faces"]
-            return [(list(zip(node_x[k], node_y[k]))) for k in faces]
+            return [
+                (list(zip(node_x[k], node_y[k], strict=False))) for k in faces
+            ]
 
         if self.topology() == "sgrid":
             x, y = self.x_axis()[:], self.y_axis()[:]
@@ -215,7 +206,7 @@ class CFVariable(object):
             x = _filled_masked(x)
             y = _filled_masked(y)
             if hasattr(y, "filled"):
-                y = y.filled(fill_value=np.NaN)
+                y = y.filled(fill_value=np.nan)
             x, y = np.meshgrid(x, y)
             coords = np.stack([x, y], axis=2)
             return _make_grid(coords)

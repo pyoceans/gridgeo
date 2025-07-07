@@ -25,20 +25,17 @@ def set_precision(coords, precision):
     return result
 
 
-class GridGeo(object):
-    """
-    GridGeo class takes a nc-like object (netCDF4-python or a netCDF
+class GridGeo:
+    """GridGeo class takes a nc-like object (netCDF4-python or a netCDF
     file/URL) and parse the grid information.
 
     """
 
     def __init__(self, nc, **kwargs):
-        """
-        Return a GridGeo class.
+        """Return a GridGeo class.
         nc: netCDF4-python object or a netCDF file/URL string
 
         """
-
         if isinstance(nc, netCDF4.Dataset):
             pass
         else:
@@ -68,7 +65,7 @@ class GridGeo(object):
         return self._geometry
 
     def __str__(self):
-        return f"{self.mesh}"
+        return str(self.mesh)
 
     def __repr__(self):
         return f"<GridGeo: {self.mesh}>"
@@ -86,8 +83,7 @@ class GridGeo(object):
         return self._geo_interface
 
     def to_geojson(self, **kw):
-        """
-        Return a GeoJSON representation of an grid object.
+        """Return a GeoJSON representation of an grid object.
         The `kw` are based on the simplestyle-spec:
         https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
 
@@ -105,7 +101,8 @@ class GridGeo(object):
         float_precision = kw.pop("float_precision", 6)
         geometry = copy(self.geometry.__geo_interface__)
         geometry["coordinates"] = set_precision(
-            geometry["coordinates"], float_precision
+            geometry["coordinates"],
+            float_precision,
         )
 
         geojson = {
@@ -162,5 +159,5 @@ class GridGeo(object):
                     {
                         "geometry": self.__geo_interface__,
                         "properties": {"name": name},
-                    }
+                    },
                 )

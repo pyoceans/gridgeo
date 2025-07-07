@@ -1,7 +1,4 @@
-"""
-Lightweight UGRID-1.0 parser
-
-"""
+"""Lightweight UGRID-1.0 parser"""
 
 import netCDF4
 import numpy as np
@@ -53,9 +50,8 @@ def _valid_y(var):
 def _mandatory_attr(var, attribute):
     if not hasattr(var, attribute):
         raise ValueError(
-            f"Could not find required attribute {attribute} in {var}."
+            f"Could not find required attribute {attribute} in {var}.",
         )
-    return
 
 
 def get_mesh_var(nc):
@@ -63,11 +59,11 @@ def get_mesh_var(nc):
     mesh_var = nc.get_variables_by_attributes(cf_role="mesh_topology")
     if not mesh_var:
         raise ValueError(
-            f"Could not find mesh_topology variable in the dataset {nc}"
+            f"Could not find mesh_topology variable in the dataset {nc}",
         )
     if len(mesh_var) > 1:
         raise ValueError(
-            f"Expected 1 mesh_topology variable, found {len(mesh_var)}."
+            f"Expected 1 mesh_topology variable, found {len(mesh_var)}.",
         )
 
     mesh_var = mesh_var[0]
@@ -76,7 +72,7 @@ def get_mesh_var(nc):
 
     if mesh_var.topology_dimension not in (1, 2):
         raise ValueError(
-            f"Expected mesh dimension to be 1 or 2, got {mesh_var.topology_dimension}."
+            f"Expected mesh dimension to be 1 or 2, got {mesh_var.topology_dimension}.",
         )
     return mesh_var
 
@@ -148,10 +144,10 @@ def ugrid(nc):
                     y = nc[name][:]
                 else:
                     raise ValueError(
-                        f"Could not recognize axis for {nc[name]}"
+                        f"Could not recognize axis for {nc[name]}",
                     )
             grid.update({key: {"x": x, "y": y}})
-        if key in valid_connectivity.keys():
+        if key in valid_connectivity:
             connectivity = nc[mesh_var.getncattr(key).strip()]
             num_ind = valid_connectivity[key]
             array = connectivity_array(connectivity, num_ind)
