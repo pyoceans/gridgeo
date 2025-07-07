@@ -10,7 +10,7 @@ to a variety of geo-like objects: GeoJSON, and shapefile.
    :maxdepth: 3
    :caption: Contents:
 
-   gridgeo_tour.ipynb
+   gridgeo_tour-output.ipynb
    gridgeo
 
 Indices and tables
