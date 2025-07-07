@@ -1,3 +1,5 @@
+"""Grid IO CLI."""
+
 from docopt import docopt
 
 from gridgeo import GridGeo
@@ -24,11 +26,12 @@ Options:
 
 
 def parse_args():
-    args = docopt(__doc__)
-    return args
+    """Parse arguments for CLI."""
+    return docopt(__doc__)
 
 
 def cli(args):
+    """CLI driver."""
     url = args.get("URL")
     standard_name = args.get("VAR")
     filename = args.get("--output")
@@ -38,6 +41,7 @@ def cli(args):
 
 
 def main():
+    """CLI call."""
     args = parse_args()
     cli(args)
 

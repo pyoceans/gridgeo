@@ -1,36 +1,37 @@
 name: Tests
 
+# no permissions by default
+permissions: {}
+
 on:
   pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   run:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        pixi-environment: [ py310, py311,  py312, py313 ]
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup Micromamba
-      uses: mamba-org/provision-with-micromamba@v13
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       with:
-        environment-file: false
+        fetch-depth: 0
+        persist-credentials: false
 
-    - name: Python ${{ matrix.python-version }}
-      shell: bash -l {0}
-      run: |
-        micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
-        micromamba activate TEST
-        pip install -e . --no-deps --force-reinstall
+    - name: Setup Pixi
+      uses: prefix-dev/setup-pixi@14c8aabd75893f83f4ab30c03e7cf853c8208961  # v0.8.10
+      with:
+        manifest-path: pyproject.toml
 
-    - name: Tests
-      shell: bash -l {0}
-      run: |
-        micromamba activate TEST
-        pytest -rxs --cov=gridgeo tests
+    - name: Run Tests
+      run: pixi run --environment ${{ matrix.pixi-environment }} test

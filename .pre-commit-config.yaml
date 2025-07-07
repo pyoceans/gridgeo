@@ -1,0 +1,85 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+    - id: trailing-whitespace
+    - id: check-ast
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: check-docstring-first
+    - id: check-added-large-files
+    - id: requirements-txt-fixer
+    - id: file-contents-sorter
+      files: requirements-dev.txt
+
+- repo: https://github.com/keewis/blackdoc
+  rev: v0.4.1
+  hooks:
+    - id: blackdoc
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+    - id: codespell
+      exclude: >
+          (?x)^(
+              .*\.yaml
+          )$
+      args:
+        - --quiet-level=2
+        - --ignore-words-list=degreee,astroid
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.20.0
+  hooks:
+    - id: pyupgrade
+      args:
+        - --py36-plus
+
+- repo: https://github.com/dosisod/refurb
+  rev: v2.1.0
+  hooks:
+    - id: refurb
+
+- repo: https://github.com/asottile/add-trailing-comma
+  rev: v3.2.0
+  hooks:
+    - id: add-trailing-comma
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.12.2
+  hooks:
+    - id: ruff
+      args: ["--fix", "--show-fixes"]
+    - id: ruff-format
+
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 1.9.1
+  hooks:
+    - id: nbqa-check-ast
+    - id: nbqa-ruff
+      args: [
+        --fix,
+        --config=ruff.toml,
+        ]
+
+- repo: https://github.com/bdice/nb-strip-paths
+  rev: v0.1.0
+  hooks:
+    - id: nb-strip-paths
+
+- repo: https://github.com/woodruffw/zizmor-pre-commit
+  rev: v1.11.0
+  hooks:
+    - id: zizmor
+
+ci:
+    autofix_commit_msg: |
+        [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+        for more information, see https://pre-commit.ci
+    autofix_prs: false
+    autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+    autoupdate_schedule: monthly
+    skip: []
+    submodules: false

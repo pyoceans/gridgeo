@@ -1,0 +1,13 @@
+*.egg*
+.coverage
+.ipynb_checkpoints
+.mypy_cache/
+.pytest_cache/
+_version.py
+build/
+dist/
+*-output.ipynb
+.vscode/
+*.code-workspace
+**/__pycache__
+.hypothesis/

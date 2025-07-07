@@ -5,10 +5,10 @@ from dask.local import get_sync
 dask.set_options(get=get_sync)
 
 
-class DaskNetCDF(object):
+class DaskNetCDF:
     def __init__(self, variable, array=None, chunks=None):
         self._variable = variable
-        self.chunks = -1 if not chunks else chunks
+        self.chunks = chunks or -1
         if array is None:
             self.array = da.from_array(variable, chunks=chunks)
         else:
@@ -20,8 +20,10 @@ class DaskNetCDF(object):
         for line in lines[1:]:
             if "current shape" in line:
                 left = line.split("=")[0]
-                line = "= ".join([left, str(self.array.shape)])
-            new_lines.append(line)
+                _line = "= ".join([left, str(self.array.shape)])
+            else:
+                _line = line
+            new_lines.append(_line)
 
         return "\n".join(new_lines)
 
@@ -36,7 +38,9 @@ class DaskNetCDF(object):
     def transpose(self, *axes):
         new_array = self.array.transpose(*axes)
         return DaskNetCDF(
-            variable=self._variable, array=new_array, chunks=self.chunks
+            variable=self._variable,
+            array=new_array,
+            chunks=self.chunks,
         )
 
     @property
@@ -49,17 +53,23 @@ class DaskNetCDF(object):
     def __add__(self, other):
         new_array = self.array.__add__(other)
         return DaskNetCDF(
-            variable=self._variable, array=new_array, chunks=self.chunks
+            variable=self._variable,
+            array=new_array,
+            chunks=self.chunks,
         )
 
     def __sub__(self, other):
         new_array = self.array.__sub__(other)
         return DaskNetCDF(
-            variable=self._variable, array=new_array, chunks=self.chunks
+            variable=self._variable,
+            array=new_array,
+            chunks=self.chunks,
         )
 
     def astype(self, dtype, **kwargs):
         new_array = self.array.astype(dtype, **kwargs)
         return DaskNetCDF(
-            variable=self._variable, array=new_array, chunks=self.chunks
+            variable=self._variable,
+            array=new_array,
+            chunks=self.chunks,
         )
