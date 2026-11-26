@@ -24,6 +24,10 @@ dependencies = [
   "numpy>=2",
   "shapely>=2",
 ]
+optional-dependencies.extras = [
+  "fiona",
+  "matplotlib",
+]
 urls.documentation = "https://pyoceans.github.io/gridgeo"
 urls.homepage = "https://github.com/pyoceans/gridgeo"
 urls.repository = "https://github.com/pyoceans/gridgeo"
@@ -32,10 +36,8 @@ entry-points.console_scripts.gridio = "gridgeo.gridio:main"
 [dependency-groups]
 dev = [
   "cartopy",
-  "fiona",
   "folium",
   "hypothesis",
-  "matplotlib",
   "nbsphinx",
   "pooch",
   "pytest",
