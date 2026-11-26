@@ -9,18 +9,23 @@ on:
     branches:
       - main
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   run:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        pixi-environment: [ py310, py314 ]
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        pixi-environment: [ py311, py315 ]
+        os: [ ubuntu-latest ]
+        include:
+          - os: windows-latest
+            python-version: "3.15"
+          - os: macos-latest
+            python-version: "3.15"
+          - os: macos-15-intel
+            python-version: "3.15"
       fail-fast: false
+    permissions:
+      actions: none
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -28,10 +33,16 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
 
-    - name: Setup Pixi
-      uses: prefix-dev/setup-pixi@9936258fee697aff89b3fed6ca1f80a382ef694e  # v0.11.3
+    - name: Set up Python
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
       with:
-        manifest-path: pyproject.toml
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install library
+      run: |
+        python -m pip install --group dev
+        python -m pip install -e .
 
     - name: Run Tests
-      run: pixi run --environment ${{ matrix.pixi-environment }} test
+      run: |
+        python -m pytest -rxs tests
