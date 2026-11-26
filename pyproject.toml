@@ -38,11 +38,13 @@ dev = [
   "cartopy",
   "folium",
   "hypothesis",
+  "nbclassic",
+  "nbconvert",
   "nbsphinx",
   "pooch",
-  "pytest",
   "pytest-cov",
   "pytest-xdist",
+  "pytest",
   "sphinx",
 ]
 
