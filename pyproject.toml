@@ -1,33 +1,36 @@
 [build-system]
-requires = [
-  "setuptools>=41.2",
-  "setuptools-scm",
-]
 build-backend = "setuptools.build_meta"
+requires = [ "setuptools>=42", "setuptools-scm" ]
 
 [project]
 name = "gridgeo"
-dynamic = ["version"]
 description = "Convert UGRID, SGRID, and non-compliant ocean model grids to geo-like objects"
 readme = "README.md"
-authors = [
-  {email = "ocefpaf@gmail.com"},
-  {name = "Filipe Fernandes"}
+license = { text = "BSD-3-Clause" }
+maintainers = [ { email = "ocefpaf@gmail.com" }, { name = "Filipe Fernandes" } ]
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
 ]
-requires-python = ">=3.10"
-license = {text = "BSD-3-Clause"}
+dynamic = [ "version" ]
 dependencies = [
   "docopt",
-  "netCDF4",
-  "shapely>=2",
+  "netcdf4",
   "numpy>=2",
+  "shapely>=2",
 ]
+urls.documentation = "https://pyoceans.github.io/gridgeo"
+urls.homepage = "https://github.com/pyoceans/gridgeo"
+urls.repository = "https://github.com/pyoceans/gridgeo"
+entry-points.console_scripts.gridio = "gridgeo.gridio:main"
 
-[project.entry-points.console_scripts]
-gridio = "gridgeo.gridio:main"
-
-[project.optional-dependencies]
-test = [
+[dependency-groups]
+dev = [
   "cartopy",
   "fiona",
   "folium",
@@ -41,74 +44,32 @@ test = [
   "sphinx",
 ]
 
-[project.urls]
-homepage = "https://github.com/pyoceans/gridgeo"
-documentation = "https://pyoceans.github.io/gridgeo"
-repository = "https://github.com/pyoceans/gridgeo"
-
 [tool.setuptools]
-license-files = ["LICENSE.txt"]
+packages = [ "gridgeo" ]
+platforms = [ "any" ]
+license-files = [ "LICENSE.txt" ]
 zip-safe = true
-platforms = ["any"]
-packages = ["gridgeo"]
 
 [tool.setuptools_scm]
+tag_regex = "^(?P<prefix>v)?(?P<version>[^\\+]+)(?P<suffix>.*)?$"
 write_to = "gridgeo/_version.py"
 write_to_template = "__version__ = '{version}'"
-tag_regex = "^(?P<prefix>v)?(?P<version>[^\\+]+)(?P<suffix>.*)?$"
 
-[tool.pytest.ini_options]
-filterwarnings = [
-    "error",
-    "ignore::UserWarning",
+[tool.pytest]
+ini_options.addopts = "-s -rxs -v"
+ini_options.filterwarnings = [
+  "error",
+  "ignore::UserWarning",
 ]
-addopts = "-s -rxs -v"
 
 [check-manifest]
 ignore = [
-    "*.yml",
-    ".coveragerc",
-    "docs",
-    "docs/*",
-    "notebooks",
-    "notebooks/*",
-    "tests",
-    "tests/*",
+  "*.yml",
+  ".coveragerc",
+  "docs",
+  "docs/*",
+  "notebooks",
+  "notebooks/*",
+  "tests",
+  "tests/*",
 ]
-
-
-[tool.pixi.workspace]
-channels = ["conda-forge"]
-platforms = ["win-64", "linux-64", "osx-64"]
-
-[tool.pixi.environments]
-default = { features = ["py314"], solve-group = "py314" }
-py314 = { features = ["py314"], solve-group = "py314" }
-py310 = ["py310"]
-
-[tool.pixi.tasks]
-install = { cmd = "pip install -e . --no-deps --force-reinstall" }
-test = { cmd = "pytest -rxs tests", depends-on = ["install"] }
-make_notebooks = { cmd = "jupyter nbconvert --to notebook --execute notebooks/gridgeo_tour.ipynb --output=gridgeo_tour-output.ipynb && mv notebooks/*output.ipynb docs/source/", depends-on = ["install"] }
-docs = { cmd = "cd docs && make clean html linkcheck", depends-on = ["make_notebooks"] }
-
-
-[tool.pixi.feature.py314.dependencies]
-python = "3.14.*"
-
-[tool.pixi.feature.py310.dependencies]
-python = "3.10.*"
-
-[tool.pixi.dependencies]
-cartopy = ">=0.24.0"
-fiona = ">=1.10.1"
-folium = ">=0.20.0"
-hypothesis = ">=6.135.26"
-matplotlib-base = ">=3.10.3"
-nbclassic = ">=1.1.1"
-nbsphinx = ">=0.9.7"
-pip = ">=25.1.1"
-pooch = ">=1.8.2"
-pytest = ">=8.4.1"
-setuptools-scm = ">=9.2.2"
-sphinx = ">=8.1.3"
