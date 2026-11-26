@@ -20,13 +20,13 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "docopt",
+  "matplotlib",
   "netcdf4",
   "numpy>=2",
   "shapely>=2",
 ]
 optional-dependencies.extras = [
   "fiona",
-  "matplotlib",
 ]
 urls.documentation = "https://pyoceans.github.io/gridgeo"
 urls.homepage = "https://github.com/pyoceans/gridgeo"

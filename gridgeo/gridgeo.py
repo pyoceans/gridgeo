@@ -5,16 +5,12 @@ from itertools import zip_longest
 from pathlib import Path
 
 import netCDF4
+from matplotlib import tri
 from shapely.geometry import MultiPolygon
 from shapely.ops import unary_union
 
 from gridgeo.cfvariable import CFVariable
 from gridgeo.ugrid import ugrid
-
-try:
-    from matplotlib import tri
-except ImportError:
-    tri = False
 
 
 def set_precision(coords, precision):
@@ -55,7 +51,7 @@ class GridGeo:
         self._outline = None
         self._geometry = None
 
-        if self.mesh == "ugrid" and tri:
+        if self.mesh == "ugrid":
             grid = ugrid(nc)
             node_x = grid["nodes"]["x"]
             node_y = grid["nodes"]["y"]
